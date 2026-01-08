@@ -5,10 +5,10 @@ export default function AlertsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:4000/api/dashboard")
-      .then((res) => res.json())
-      .then((data) => {
-        setAlerts(data.alerts || []);
+    api.get("/api/dashboard")
+      .then(res => {
+      
+        setAlerts(res.data.alerts || []);
         setLoading(false);
       })
       .catch((err) => {

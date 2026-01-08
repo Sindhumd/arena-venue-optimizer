@@ -18,9 +18,9 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:4000/api/dashboard")
-      .then((res) => res.json())
-      .then((result) => {
+    api.get("/api/dashboard")
+      .then(res => {
+      const result =res.data;
         setData({
           totalEvents: result.totalEvents ?? 0,
           peakTime: result.peakTime ?? "N/A",

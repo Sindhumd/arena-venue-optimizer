@@ -45,12 +45,12 @@ export default function EventUploadPage() {
       };
     });
 
-    const res = await fetch("http://localhost:4000/api/upload", {
+    const res = await api.get("/api/upload", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(events),
+      events,
     });
 
     if (!res.ok) {

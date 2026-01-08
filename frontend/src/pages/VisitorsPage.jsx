@@ -4,9 +4,9 @@ export default function VisitorsPage() {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:4000/api/events")
-      .then((res) => res.json())
-      .then((data) => calculateStats(data))
+    api.get("/api/events")
+      .then(res => res.calculateStats(res.data))
+      
       .catch(() =>
         console.error("Failed to load visitor analytics")
       );
