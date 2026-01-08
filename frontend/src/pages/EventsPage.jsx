@@ -4,9 +4,9 @@ export default function EventsPage() {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    api.get("/api/events")
-      .then(res => res.setEvents(res.data))
-    
+    fetch("http://localhost:4000/api/events")
+      .then((res) => res.json())
+      .then((data) => setEvents(data))
       .catch((err) => console.error(err));
   }, []);
 
