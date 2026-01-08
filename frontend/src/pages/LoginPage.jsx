@@ -1,5 +1,5 @@
 import { useState } from "react";
-import api from "api";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
@@ -16,7 +16,7 @@ export default function LoginPage() {
 
     try {
       if (mode === "login") {
-        const res = await api.post("/api/auth/login",
+        const res = await axios.post("http://localhost:4000/api/auth/login",
           { email, password }
         );
 
