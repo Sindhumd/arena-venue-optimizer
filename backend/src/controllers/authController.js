@@ -1,4 +1,4 @@
-import bcrypt from "bcryptjs";
+
 import jwt from "jsonwebtoken";
 import pool from "../config/db.js";
 
@@ -32,44 +32,34 @@ export const signup = async (req, res) => {
 };
 
 // LOGIN
+
+import jwt from "jsonwebtoken";
+
 export const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    const userResult = await pool.query(
-      "SELECT * FROM users WHERE email = $1",
-      [email]
-    );
+  // Assignment demo admin credentials
+  const ADMIN_EMAIL = "admin@arena.com";
+  const ADMIN_PASSWORD = "admin123";
 
-    if (userResult.rows.length === 0) {
-      return res.status(400).json({ message: "Invalid email or password" });
-    }
-
-    const user = userResult.rows[0];
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid email or password" });
-    }
-
-    const token = jwt.sign(
-      { id: user.id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
-
-    res.json({
-      message: "Login successful",
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        role: user.role
-      }
+  if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+    return res.status(401).json({
+      message: "Invalid email or password"
     });
-
-  } catch (err) {
-    console.error("Login Error:", err.message);
-    res.status(500).json({ error: err.message });
   }
+
+  const token = jwt.sign(
+    { email: ADMIN_EMAIL, role: "admin" },
+    process.env.JWT_SECRET || "secret123",
+    { expiresIn: "1d" }
+  );
+
+  return res.json({
+    message: "Login successful",
+    token,
+    user: {
+      email: ADMIN_EMAIL,
+      role: "admin"
+    }
+  });
 };
