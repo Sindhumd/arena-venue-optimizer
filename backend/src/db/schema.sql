@@ -77,6 +77,6 @@ INSERT INTO users (name, email, password, role)
 VALUES (
   'Admin',
   'admin@arena.com',
-  '$2b$10$I.SvVCOBbxKN172OxN/WVOc9WqWL1Q9XkXx1um4aRChlYHo41xjKO',
+  '$2b$10$8Q2gZ2yJwZqkKz8Qn4zUQe6nUj7j6XH9XJpC0JkJZ6Y0E6ZqZx9yS',
   'admin'
 );
