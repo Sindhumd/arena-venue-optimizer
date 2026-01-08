@@ -1,2 +1,7 @@
-const API_BASE = "https://arena-venue-optimizer-backend.onrender.com";
-export default API_BASE;
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+});
+
+export default api;
