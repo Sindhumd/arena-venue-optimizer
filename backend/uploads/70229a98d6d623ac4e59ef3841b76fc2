@@ -1,0 +1,11 @@
+event_name,event_date,gate,tickets,time
+Music Fest,20-12-2025,Gate A,1200,16:00
+Music Fest,20-12-2025,Gate A,1800,17:00
+Music Fest,20-12-2025,Gate B,900,16:00
+Music Fest,20-12-2025,Gate B,2100,18:00
+Music Fest,20-12-2025,South Hall,2500,18:30
+Music Fest,20-12-2025,South Hall,3000,19:00
+Music Fest,20-12-2025,Food Court,2000,19:30
+Music Fest,20-12-2025,Food Court,2800,20:00
+,,,,
+,,,,

@@ -1,0 +1,25 @@
+event_id,event_name,event_date,gate,tickets,density,time,congestion,alert_type,message
+E101,Music Fest,2025-12-20,Gate A,5000,78,16:00,45,CROWD,Moderate crowd at Gate A
+E101,Music Fest,2025-12-20,Gate B,4200,65,16:00,30,INFO,Normal entry flow
+E101,Music Fest,2025-12-20,South Hall,6000,85,16:30,55,CROWD,High crowd detected
+E101,Music Fest,2025-12-20,Food Court,3500,72,17:00,40,INFO,Busy food court
+E101,Music Fest,2025-12-20,Gate A,5200,82,17:30,60,CROWD,Increasing congestion
+E102,Tech Expo,2025-12-22,Gate C,3000,55,10:00,20,INFO,Smooth entry
+E102,Tech Expo,2025-12-22,Gate C,3400,60,11:00,25,INFO,Steady crowd
+E102,Tech Expo,2025-12-22,Hall 1,4500,70,12:00,35,CROWD,Hall getting crowded
+E102,Tech Expo,2025-12-22,Hall 2,4800,75,13:00,40,CROWD,High footfall
+E102,Tech Expo,2025-12-22,Gate C,5000,80,14:00,55,SECURITY,Bag checks slowing entry
+E103,Sports Match,2025-12-25,Gate A,7000,88,17:00,65,CROWD,Heavy crowd inflow
+E103,Sports Match,2025-12-25,Gate B,6800,84,17:30,60,CROWD,High congestion
+E103,Sports Match,2025-12-25,Gate C,6400,78,18:00,55,INFO,Controlled flow
+E103,Sports Match,2025-12-25,South Hall,7500,90,18:30,70,CROWD,Critical density
+E103,Sports Match,2025-12-25,Food Court,6000,80,19:00,50,INFO,Peak dinner rush
+E104,Conference,2025-12-28,Gate A,2000,45,09:00,15,INFO,Low crowd
+E104,Conference,2025-12-28,Hall A,2500,50,10:00,20,INFO,Normal seating
+E104,Conference,2025-12-28,Hall B,2700,55,11:00,25,INFO,Steady sessions
+E104,Conference,2025-12-28,Gate A,3000,60,12:00,30,TRANSPORT,Metro delay reported
+E104,Conference,2025-12-28,Hall C,3200,65,13:00,35,CROWD,Session overlap crowd
+E105,Cultural Show,2025-12-30,Gate B,4800,75,18:00,45,CROWD,Evening rush
+E105,Cultural Show,2025-12-30,Gate B,5200,80,18:30,55,CROWD,High entry demand
+E105,Cultural Show,2025-12-30,Main Stage,6500,85,19:00,60,CROWD,Audience peak
+E105,Cultural Show,2025-12-30,Exit Zone,6000,70,21:00,50,SECURITY,Exit monitoring active

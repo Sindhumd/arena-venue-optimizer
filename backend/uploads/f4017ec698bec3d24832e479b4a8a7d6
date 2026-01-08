@@ -1,0 +1,13 @@
+eventName,gate,tickets,time
+Rock Night,Gate A,1200,18:30
+Rock Night,Gate B,900,18:30
+Rock Night,Gate C,600,18:30
+Tech Expo,Gate A,700,10:00
+Tech Expo,Gate B,650,10:00
+Tech Expo,Gate C,500,10:00
+Food Fest,Gate A,1500,21:00
+Food Fest,Gate B,1300,21:00
+Food Fest,Gate C,900,21:00
+Sports Meet,Gate A,800,16:00
+Sports Meet,Gate B,900,16:00
+Sports Meet,Gate C,600,16:00

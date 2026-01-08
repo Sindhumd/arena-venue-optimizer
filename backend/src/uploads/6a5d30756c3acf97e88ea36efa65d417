@@ -1,0 +1,6 @@
+ticket_id,entry_gate,checkin_time,section,row,seat
+T001,Gate A,2025-12-25T18:00:00,North,12,5
+T002,Gate B,2025-12-25T18:05:00,East,20,14
+T003,Gate C,2025-12-25T18:07:00,South,5,2
+T004,Gate A,2025-12-25T18:10:00,North,13,6
+T005,Gate B,2025-12-25T18:12:00,East,21,15

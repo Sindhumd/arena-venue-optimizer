@@ -1,0 +1,40 @@
+eventName,gate,tickets,time
+Morning Yoga Session,Gate A,450,09:00
+Morning Yoga Session,Gate B,300,09:00
+Morning Yoga Session,Gate C,250,09:00
+
+Tech Expo Entry,Gate A,700,10:00
+Tech Expo Entry,Gate B,600,10:00
+Tech Expo Entry,Gate C,500,10:00
+
+Startup Meetup,Gate A,900,11:00
+Startup Meetup,Gate B,850,11:00
+Startup Meetup,Gate C,650,11:00
+
+Food Carnival,Gate A,1100,12:00
+Food Carnival,Gate B,1000,12:00
+Food Carnival,Gate C,900,12:00
+
+Cultural Fest,Gate A,1300,13:00
+Cultural Fest,Gate B,1200,13:00
+Cultural Fest,Gate C,1100,13:00
+
+Evening Concert,Gate A,1500,18:30
+Evening Concert,Gate B,1400,18:30
+Evening Concert,Gate C,1300,18:30
+
+Post Concert Exit,Gate A,800,19:00
+Post Concert Exit,Gate B,700,19:00
+Post Concert Exit,Gate C,600,19:00
+
+Movie Premiere,Gate A,500,20:00
+Movie Premiere,Gate B,450,20:00
+Movie Premiere,Gate C,400,20:00
+
+Late Night Show,Gate A,300,21:00
+Late Night Show,Gate B,280,21:00
+Late Night Show,Gate C,260,21:00
+
+Stadium Closing,Gate A,200,22:00
+Stadium Closing,Gate B,180,22:00
+Stadium Closing,Gate C,160,22:00

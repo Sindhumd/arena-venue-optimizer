@@ -1,0 +1,21 @@
+event_name,event_date,gate,tickets,time
+Rock Concert,2025-01-10,Gate A,1200,16:00
+Rock Concert,2025-01-10,Gate B,900,16:00
+Rock Concert,2025-01-10,Gate C,600,16:00
+Tech Expo,2025-01-12,Gate A,800,10:00
+Tech Expo,2025-01-12,Gate B,650,10:00
+Tech Expo,2025-01-12,Gate C,500,10:00
+Football Match,2025-01-15,Gate A,1500,18:30
+Football Match,2025-01-15,Gate B,1300,18:30
+Football Match,2025-01-15,Gate C,900,18:30
+Food Festival,2025-01-18,Gate A,700,12:00
+Food Festival,2025-01-18,Gate B,1100,12:00
+Food Festival,2025-01-18,Gate C,1400,12:00
+Comedy Show,2025-01-20,Gate A,500,19:00
+Comedy Show,2025-01-20,Gate B,650,19:00
+Comedy Show,2025-01-20,Gate C,400,19:00
+Cultural Fest,2025-01-25,Gate A,1000,15:00
+Cultural Fest,2025-01-25,Gate B,1200,15:00
+Cultural Fest,2025-01-25,Gate C,900,15:00
+Startup Meetup,2025-01-28,Gate A,450,11:00
+Startup Meetup,2025-01-28,Gate B,350,11:00

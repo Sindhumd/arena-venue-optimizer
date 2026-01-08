@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: arena-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Sindhu123
+      POSTGRES_DB: arena_optimizer
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/src/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  backend:
+    build: ./backend
+    container_name: arena-venue-optimizer-backend
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - postgres
+
+  frontend:
+    build: ./frontend
+    container_name: arena-venue-optimizer-frontend
+    command: npm run dev -- --host 0.0.0.0
+    ports:
+      - "5173:5173"
+volumes:
+  pgdata:

@@ -1,0 +1,52 @@
+eventName,gate,tickets,time
+Morning Yoga,Gate A,120,08:00
+Morning Yoga,Gate B,80,08:00
+Morning Yoga,Gate C,60,08:00
+
+Tech Meetup,Gate A,300,10:00
+Tech Meetup,Gate B,250,10:00
+Tech Meetup,Gate C,200,10:00
+
+Book Fair,Gate A,450,11:00
+Book Fair,Gate B,380,11:00
+Book Fair,Gate C,300,11:00
+
+Food Carnival,Gate A,700,13:00
+Food Carnival,Gate B,650,13:00
+Food Carnival,Gate C,500,13:00
+
+Startup Expo,Gate A,600,14:00
+Startup Expo,Gate B,480,14:00
+Startup Expo,Gate C,350,14:00
+
+College Fest,Gate A,900,16:00
+College Fest,Gate B,750,16:00
+College Fest,Gate C,600,16:00
+
+Sports Screening,Gate A,1100,18:00
+Sports Screening,Gate B,950,18:00
+Sports Screening,Gate C,800,18:00
+
+Rock Concert,Gate A,1500,21:00
+Rock Concert,Gate B,1300,21:00
+Rock Concert,Gate C,900,21:00
+
+Comedy Night,Gate A,400,19:00
+Comedy Night,Gate B,350,19:00
+Comedy Night,Gate C,300,19:00
+
+Dance Show,Gate A,800,20:00
+Dance Show,Gate B,720,20:00
+Dance Show,Gate C,650,20:00
+
+Art Exhibition,Gate A,200,09:00
+Art Exhibition,Gate B,150,09:00
+Art Exhibition,Gate C,100,09:00
+
+Film Festival,Gate A,950,17:00
+Film Festival,Gate B,800,17:00
+Film Festival,Gate C,650,17:00
+
+Night Market,Gate A,1200,22:00
+Night Market,Gate B,1000,22:00
+Night Market,Gate C,850,22:00
