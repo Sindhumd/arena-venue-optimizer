@@ -3,13 +3,9 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  server: {
-    host: "0.0.0.0",
-    proxy: {
-      "/api": {
-        target: "http://arena-venue-optimizer-backend:4000",
-        changeOrigin: true,
-      },
-    },
+
+  // IMPORTANT for React Router on Render
+  preview: {
+    historyApiFallback: true,
   },
 });
