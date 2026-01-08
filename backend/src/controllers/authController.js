@@ -33,7 +33,7 @@ export const signup = async (req, res) => {
 
 // LOGIN
 
-import jwt from "jsonwebtoken";
+
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
