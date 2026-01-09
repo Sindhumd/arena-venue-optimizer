@@ -3,7 +3,7 @@ function UploadEventsPage() {
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
 
-    await fetch("http://localhost:4000/api/upload/upload", {
+    await fetch("http://localhost:4000/api/upload", {
       method: "POST",
       body: formData
     });
