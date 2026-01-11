@@ -3,7 +3,7 @@ function UploadEventsPage() {
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
 
-    await fetch('${import.meta.env.VITE_API_BASE_URL}/api/upload/upload' ,{
+    await fetch('${import.meta.env.VITE_API_BASE_URL}/api/upload' ,{
       method: "POST",
       body: formData
     });
