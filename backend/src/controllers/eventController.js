@@ -1,5 +1,6 @@
-import dataStore from "../dataStore.js";
+import datastore from "../dataStore.js";
 
 export function getEvents(req, res) {
-  res.json(dataStore.events);
+  const events = datastore.loadEvents();
+  res.json(events);
 }
