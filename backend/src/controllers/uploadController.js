@@ -5,7 +5,7 @@ export const uploadEvents = (req, res) => {
     return res.status(400).json({ message: "Invalid data" });
   }
 
-  dataStore.saveEvents(req.body);
+  dataStore.events = req.body;
 
   res.json({ message: "Events uploaded successfully" });
 };
