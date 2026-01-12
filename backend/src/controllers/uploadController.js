@@ -16,35 +16,39 @@ export const uploadEvents = async (req, res) => {
     })
     .on("end", async () => {
       try {
+        // Clear old data
         await pool.query("DELETE FROM events");
 
         for (const e of events) {
-  let gate = e.gate;
-  let name = e.name;
+          let name = e.name?.trim();
+          let gate = e.gate?.trim();
+          let tickets = Number(e.tickets);
+          let time = e.time?.trim();
 
-  // FIX: extract gate from name if gate column is empty
-  if ((!gate || gate.trim() === "") && name.includes("Gate")) {
-    const parts = name.split("Gate");
-    name = parts[0].trim();
-    gate = "Gate " + parts[1].trim();
-  }
+          // Auto-extract gate from name if missing
+          if ((!gate || gate === "") && name?.includes("Gate")) {
+            const parts = name.split("Gate");
+            name = parts[0].trim();
+            gate = "Gate " + parts[1].trim();
+          }
 
-  await pool.query(
-    `INSERT INTO events (name, gate, tickets)
-     VALUES ($1, $2, $3)`,
-    [name, gate, Number(e.tickets)]
-  );
-}
+          // ❗ IMPORTANT: INSERT ALL 4 COLUMNS
+          await pool.query(
+            `INSERT INTO events (name, gate, tickets, time)
+             VALUES ($1, $2, $3, $4)`,
+            [name, gate, tickets, time]
+          );
+        }
 
         fs.unlinkSync(req.file.path);
 
-        res.json({
+        return res.json({
           message: "CSV uploaded & saved in database",
-          rows: events.length
+          rowsInserted: events.length,
         });
       } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Database error" });
+        console.error("UPLOAD ERROR:", err);
+        return res.status(500).json({ message: "Database error" });
       }
     });
 };

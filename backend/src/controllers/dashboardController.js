@@ -1,4 +1,4 @@
-import pool from "../config/db.js";
+import pool from "../db/pool.js";
 
 export const getDashboardData = async (req, res) => {
   try {
@@ -8,30 +8,30 @@ export const getDashboardData = async (req, res) => {
       return res.json({
         totalEvents: 0,
         totalTickets: 0,
-        gates: []
+        gates: [],
       });
     }
 
     let totalTickets = 0;
     const gateMap = {};
 
-    rows.forEach(r => {
-      totalTickets += r.tickets;
-      gateMap[r.gate] = (gateMap[r.gate] || 0) + r.tickets;
+    rows.forEach((r) => {
+      totalTickets += Number(r.tickets);
+      gateMap[r.gate] = (gateMap[r.gate] || 0) + Number(r.tickets);
     });
 
     const gates = Object.entries(gateMap).map(([gate, tickets]) => ({
       gate,
-      tickets
+      tickets,
     }));
 
-    res.json({
+    return res.json({
       totalEvents: rows.length,
       totalTickets,
-      gates
+      gates,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Dashboard failed" });
+    console.error("DASHBOARD ERROR:", err);
+    return res.status(500).json({ message: "Dashboard failed" });
   }
 };
