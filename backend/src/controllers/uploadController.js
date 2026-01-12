@@ -1,6 +1,6 @@
 import fs from "fs";
 import csv from "csv-parser";
-import pool from "../db/pool.js";
+import pool from "../config/db.js";
 
 export const uploadEvents = async (req, res) => {
   if (!req.file) {
