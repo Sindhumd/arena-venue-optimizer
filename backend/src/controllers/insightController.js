@@ -1,60 +1,90 @@
-import datastore from "../dataStore.js";
+import pool from "../config/db.js";
 
-// POST /api/insights/generate
+/**
+ * POST /api/insights/generate
+ * (Optional trigger – calculations are DB-based)
+ */
 export const generateInsights = async (req, res) => {
-  const events = datastore.events;
+  try {
+    const { rows } = await pool.query("SELECT gate, tickets FROM events");
 
-  if (!events || events.length === 0) {
-    return res.json({ message: "No events available to generate insights" });
-  }
-
-  let totalTickets = 0;
-  let capacityIssues = 0;
-  const zoneCount = {};
-
-  events.forEach(event => {
-    const tickets = Number(event.tickets || 0);
-    const capacity = Number(event.capacity || 0);
-    const gate = event.gate || "Unknown";
-
-    totalTickets += tickets;
-
-    if (tickets > capacity) {
-      capacityIssues++;
+    if (rows.length === 0) {
+      return res.json({ message: "No events available to generate insights" });
     }
 
-    zoneCount[gate] = (zoneCount[gate] || 0) + tickets;
-  });
+    let totalTickets = 0;
+    let zoneCount = {};
+    let capacityIssues = 0;
 
-  // 🔥 Generate heatmap
-  datastore.heatmap = Object.keys(zoneCount).map(zone => ({
-    zone,
-    value: zoneCount[zone]
-  }));
+    rows.forEach(r => {
+      const tickets = Number(r.tickets || 0);
+      const gate = r.gate || "Unknown";
 
-  // 🔥 Alerts
-  datastore.alerts = capacityIssues > 0
-    ? ["Overcapacity detected"]
-    : [];
+      totalTickets += tickets;
+      zoneCount[gate] = (zoneCount[gate] || 0) + tickets;
 
-  // 🔥 Dashboard insights
-  datastore.dashboard = {
-    peakTime: "18:00 - 20:00",
-    highRiskZones: capacityIssues
-  };
+      if (tickets > 1000) capacityIssues++;
+    });
 
-  datastore.congestion = totalTickets;
-
-  res.json({ message: "Insights generated successfully" });
+    res.json({
+      message: "Insights generated successfully",
+      totalTickets,
+      peakTime: "18:00 - 20:00",
+      highRiskZones: capacityIssues
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Insight generation failed" });
+  }
 };
 
-// GET /api/insights
+/**
+ * GET /api/insights
+ */
 export const getInsights = async (req, res) => {
-  res.json({
-    heatmap: datastore.heatmap,
-    congestion: datastore.congestion,
-    alerts: datastore.alerts,
-    peakTime: datastore.dashboard.peakTime,
-    highRiskZones: datastore.dashboard.highRiskZones
-  });
+  try {
+    const { rows } = await pool.query("SELECT gate, tickets FROM events");
+
+    if (rows.length === 0) {
+      return res.json({
+        heatmap: [],
+        congestion: 0,
+        alerts: [],
+        peakTime: null,
+        highRiskZones: 0
+      });
+    }
+
+    let totalTickets = 0;
+    let heatmap = {};
+    let alerts = [];
+    let highRiskZones = 0;
+
+    rows.forEach(r => {
+      const tickets = Number(r.tickets || 0);
+      const gate = r.gate || "Unknown";
+
+      totalTickets += tickets;
+      heatmap[gate] = (heatmap[gate] || 0) + tickets;
+
+      if (tickets > 1000) {
+        alerts.push(`High congestion at ${gate}`);
+        highRiskZones++;
+      }
+    });
+
+    res.json({
+      heatmap: Object.entries(heatmap).map(([zone, value]) => ({
+        zone,
+        value
+      })),
+      congestion: totalTickets,
+      alerts,
+      peakTime: "18:00 - 20:00",
+      highRiskZones
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch insights" });
+  }
 };
