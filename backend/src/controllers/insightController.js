@@ -85,6 +85,6 @@ export const getInsights = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Failed to fetch insights" });
+    res.status(400).json({ message: "Failed to fetch insights" });
   }
 };

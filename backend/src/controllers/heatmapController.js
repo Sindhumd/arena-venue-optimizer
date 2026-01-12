@@ -8,6 +8,6 @@ export const getHeatmap = async (req, res) => {
     res.json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Heatmap failed" });
+    res.status(400).json({ message: "Heatmap failed" });
   }
 };

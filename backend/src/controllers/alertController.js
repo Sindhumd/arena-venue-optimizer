@@ -13,6 +13,6 @@ export const getAlerts = async (req, res) => {
     res.json(alerts);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Alerts failed" });
+    res.status(400).json({ message: "Alerts failed" });
   }
 };

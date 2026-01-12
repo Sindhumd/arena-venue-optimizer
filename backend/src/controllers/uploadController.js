@@ -48,7 +48,7 @@ export const uploadEvents = async (req, res) => {
         });
       } catch (err) {
         console.error("UPLOAD ERROR:", err);
-        return res.status(500).json({ message: "Database error" });
+        return res.status(400).json({ message: "Database error" });
       }
     });
 };

@@ -32,6 +32,6 @@ export const getDashboardData = async (req, res) => {
     });
   } catch (err) {
     console.error("DASHBOARD ERROR:", err);
-    return res.status(500).json({ message: "Dashboard failed" });
+    return res.status(400).json({ message: "Dashboard failed" });
   }
 };

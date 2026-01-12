@@ -10,6 +10,6 @@ export async function uploadEventFile(req, res) {
     });
   } catch (err) {
     console.error("Upload error:", err);
-    res.status(500).json({ error: "Server error" });
+    res.status(400).json({ error: "Server error" });
   }
 }

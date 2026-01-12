@@ -12,6 +12,6 @@ export const getCongestion = async (req, res) => {
     res.json(result);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Congestion failed" });
+    res.status(400).json({ message: "Congestion failed" });
   }
 };

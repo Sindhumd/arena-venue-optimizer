@@ -6,6 +6,6 @@ export const getEvents = async (req, res) => {
     res.json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Failed to fetch events" });
+    res.status(400).json({ message: "Failed to fetch events" });
   }
 };
