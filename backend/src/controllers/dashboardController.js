@@ -1,18 +1,37 @@
-import datastore from "../dataStore.js";
-import { analyzeEvents } from "../services/analysisService.js";
+import pool from "../db/pool.js";
 
-export const getDashboardData = (req, res) => {
-  if (!datastore.events.length) {
-    return res.json({
-      totalEvents: 0,
-      congestion: {},
-      heatmap: {},
-      alerts: [],
-      highRiskZones: 0,
-      peakTime: "N/A"
+export const getDashboardData = async (req, res) => {
+  try {
+    const { rows } = await pool.query("SELECT * FROM events");
+
+    if (rows.length === 0) {
+      return res.json({
+        totalEvents: 0,
+        totalTickets: 0,
+        gates: []
+      });
+    }
+
+    let totalTickets = 0;
+    const gateMap = {};
+
+    rows.forEach(r => {
+      totalTickets += r.tickets;
+      gateMap[r.gate] = (gateMap[r.gate] || 0) + r.tickets;
     });
-  }
 
-  const analysis = analyzeEvents(datastore.events);
-  res.json(analysis);
+    const gates = Object.entries(gateMap).map(([gate, tickets]) => ({
+      gate,
+      tickets
+    }));
+
+    res.json({
+      totalEvents: rows.length,
+      totalTickets,
+      gates
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Dashboard failed" });
+  }
 };
