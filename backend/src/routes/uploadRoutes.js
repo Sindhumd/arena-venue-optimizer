@@ -4,7 +4,10 @@ import { uploadEvents } from "../controllers/uploadController.js";
 
 const router = express.Router();
 
-// IMPORTANT: upload middleware must be before controller
-router.post("/", upload, uploadEvents);
+router.post(
+  "/",
+  upload.single("file"),   // ✅ THIS WAS MISSING
+  uploadEvents             // ✅ must be a function
+);
 
 export default router;
