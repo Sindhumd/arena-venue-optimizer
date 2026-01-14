@@ -12,7 +12,7 @@ export function parseCSV(filePath) {
           event_name: row.event_name,
           event_date: row.event_date,
           gate: row.gate,
-          tickets: Number(row.tickets),
+          tickets: Number(row.tickets || 0),
           time: row.time
         });
       })
