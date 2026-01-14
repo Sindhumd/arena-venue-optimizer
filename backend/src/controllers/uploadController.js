@@ -16,7 +16,7 @@ export const uploadEvents = async (req, res) => {
     })
     .on("end", async () => {
       try {
-        // Clear old data
+        // clear old data
         await pool.query("DELETE FROM events");
 
         for (const e of events) {
@@ -25,17 +25,15 @@ export const uploadEvents = async (req, res) => {
           let tickets = Number(e.tickets);
           let time = e.time?.trim();
 
-          // Auto-extract gate from name if missing
+          // auto extract gate if missing
           if ((!gate || gate === "") && name?.includes("Gate")) {
             const parts = name.split("Gate");
             name = parts[0].trim();
             gate = "Gate " + parts[1].trim();
           }
 
-          // ❗ IMPORTANT: INSERT ALL 4 COLUMNS
           await pool.query(
-            `INSERT INTO events (name, gate, tickets, time)
-             VALUES ($1, $2, $3, $4)`,
+            "INSERT INTO events (name, gate, tickets, time) VALUES ($1, $2, $3, $4)",
             [name, gate, tickets, time]
           );
         }
@@ -43,12 +41,12 @@ export const uploadEvents = async (req, res) => {
         fs.unlinkSync(req.file.path);
 
         return res.json({
-          message: "CSV uploaded & saved in database",
+          message: "CSV uploaded successfully",
           rowsInserted: events.length,
         });
       } catch (err) {
-        console.error("UPLOAD ERROR:", err);
-        return res.status(400).json({ message: "Database error" });
+        console.error(err);
+        return res.status(500).json({ message: "Database error" });
       }
     });
 };
