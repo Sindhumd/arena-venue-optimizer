@@ -1,6 +1,6 @@
 import { parseCSV } from "../services/fileParser.js";
 import { analyzeEvents } from "../services/analysisService.js";
-import pool from "../config/pool.js";
+import pool from "../config/db.js";
 
 export async function uploadEvents(req, res) {
   try {
