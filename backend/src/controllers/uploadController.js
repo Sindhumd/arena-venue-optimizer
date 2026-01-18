@@ -9,7 +9,7 @@ export const uploadEvents = async (req, res) => {
 
   const events = [];
 
-  const stream = Readable.from(req.file.buffer.toString());
+  const stream = Readable.from(req.file.buffer);
 
   stream
     .pipe(csv())
