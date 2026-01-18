@@ -6,7 +6,7 @@ export default function AlertsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("${API_BASE_URL}/api/dashboard")
+    api.get("/api/dashboard")
       .then((res) => res.json())
       .then((data) => {
         setAlerts(data.alerts || []);

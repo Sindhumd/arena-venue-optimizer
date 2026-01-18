@@ -4,7 +4,7 @@ export default function VisitorsPage() {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    fetch("${API_BASE_URL}/api/events")
+    api.get("/api/events")
       .then((res) => res.json())
       .then((data) => calculateStats(data))
       .catch(() =>
