@@ -18,7 +18,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("${import.meta.env.VITE_API_BASE_URL}/api/dashboard")
+    fetch("${API_BASE_URL}/api/dashboard")
       .then((res) => res.json())
       .then((result) => {
         setData({

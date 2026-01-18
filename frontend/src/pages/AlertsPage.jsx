@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 
+
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("${import.meta.env.VITE_API_BASE_URL}/api/dashboard")
+    fetch("${API_BASE_URL}/api/dashboard")
       .then((res) => res.json())
       .then((data) => {
         setAlerts(data.alerts || []);
