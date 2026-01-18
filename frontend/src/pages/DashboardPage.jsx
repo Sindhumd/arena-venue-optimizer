@@ -18,7 +18,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get("/api/dashboard")
+    api.get("${API_BASE_URL}/api/dashboard")
       .then((res) => res.json())
       .then((result) => {
         setData({
