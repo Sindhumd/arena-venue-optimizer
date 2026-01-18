@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import api from "../api";
 
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    fetch("${import.meta.env.VITE_API_BASE_URL}/api/events")
+    api.get("/api/events")
       .then((res) => res.json())
       .then((data) => setEvents(data))
       .catch((err) => console.error(err));
