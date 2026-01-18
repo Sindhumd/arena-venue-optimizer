@@ -3,9 +3,5 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-
-  // IMPORTANT for React Router on Render
-  preview: {
-    historyApiFallback: true,
-  },
+  base: "/",   // ✅ REQUIRED for Render
 });
