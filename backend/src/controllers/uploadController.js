@@ -1,6 +1,6 @@
-import fs from "fs";
 import csv from "csv-parser";
 import pool from "../config/db.js";
+import { Readable } from "stream";
 
 export const uploadEvents = async (req, res) => {
   if (!req.file) {
@@ -9,7 +9,9 @@ export const uploadEvents = async (req, res) => {
 
   const events = [];
 
-  fs.createReadStream(req.file.path)
+  const stream = Readable.from(req.file.buffer.toString());
+
+  stream
     .pipe(csv())
     .on("data", (row) => {
       events.push({
