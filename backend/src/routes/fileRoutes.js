@@ -1,11 +1,10 @@
-router.post("/upload", uploadMiddleware, async (req, res) => {
-  try {
-    const parsed = await fileParser(req.file.path);
-    return res.json({
-      success: true,
-      data: parsed
-    });
-  } catch (err) {
-    return res.status(500).json({ success: false, error: err.message });
-  }
-});
+import express from "express";
+import multer from "multer";
+import { uploadEventFile } from "../controllers/fileController.js";
+
+const router = express.Router();
+const upload = multer({ dest: "uploads/" });
+
+router.post("/upload", upload.single("file"), uploadEventFile);
+
+export default router;

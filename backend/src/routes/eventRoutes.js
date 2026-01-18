@@ -1,8 +1,11 @@
 import express from "express";
-import { getEvents } from "../controllers/eventController.js";
+import { getAllEvents } from "../models/eventModel.js";
 
 const router = express.Router();
 
-router.get("/", getEvents);
+router.get("/", async (req, res) => {
+  const events = await getAllEvents();
+  res.json(events);
+});
 
 export default router;

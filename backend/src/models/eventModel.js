@@ -1,9 +1,7 @@
-let events = []; // temporary (OK for assignment)
+let events = [];
 
-export const createEvent = async (event) => {
-  const newEvent = { id: events.length + 1, ...event };
-  events.push(newEvent);
-  return newEvent;
+export const addEvents = async (newEvents) => {
+  events.push(...newEvents);
 };
 
 export const getAllEvents = async () => {
