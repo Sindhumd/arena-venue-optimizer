@@ -1,14 +1,12 @@
 import Navbar from "../components/Navbar";
+import { Outlet } from "react-router-dom";
 
-export default function AdminLayout({ children }) {
+export default function AdminLayout() {
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* ROLE-BASED SIDEBAR */}
       <Navbar />
-
-      {/* PAGE CONTENT */}
       <main className="flex-1 p-6">
-        {children}
+        <Outlet />
       </main>
     </div>
   );

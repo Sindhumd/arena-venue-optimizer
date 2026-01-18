@@ -1,81 +1,27 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
+import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import EventsPage from "./pages/EventsPage";
 import EventUploadPage from "./pages/EventUploadPage";
 import AlertsPage from "./pages/AlertsPage";
 import VisitorsPage from "./pages/VisitorsPage";
-import LoginPage from "./pages/LoginPage";
-import AdminLayout from "./layout/AdminLayout";
 import InsightPage from "./pages/InsightPage";
+import AdminLayout from "./layout/AdminLayout";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Login */}
-        <Route path="/" element={<LoginPage />} />
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
 
-        {/* Dashboard */}
-        <Route
-          path="/dashboard"
-          element={
-            <AdminLayout>
-              <DashboardPage />
-            </AdminLayout>
-          }
-        />
-
-        {/* Events Table */}
-        <Route
-          path="/events"
-          element={
-            <AdminLayout>
-              <EventsPage />
-            </AdminLayout>
-          }
-        />
-
-        {/* CSV Upload */}
-        <Route
-          path="/event-upload"
-          element={
-            <AdminLayout>
-              <EventUploadPage />
-            </AdminLayout>
-          }
-        />
-
-        {/* Alerts */}
-        <Route
-          path="/alerts"
-          element={
-            <AdminLayout>
-              <AlertsPage />
-            </AdminLayout>
-          }
-        />
-
-        {/* Visitors */}
-        <Route
-          path="/visitors"
-          element={
-            <AdminLayout>
-              <VisitorsPage />
-            </AdminLayout>
-          }
-        />
-
-        {/* Insights */}
-        <Route
-          path="/insights"
-          element={
-            <AdminLayout>
-              <InsightPage />
-            </AdminLayout>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+      <Route element={<AdminLayout />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/events" element={<EventsPage />} />
+        <Route path="/event-upload" element={<EventUploadPage />} />
+        <Route path="/alerts" element={<AlertsPage />} />
+        <Route path="/visitors" element={<VisitorsPage />} />
+        <Route path="/insights" element={<InsightPage />} />
+      </Route>
+    </Routes>
   );
 }
