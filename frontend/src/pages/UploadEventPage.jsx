@@ -1,24 +1,38 @@
 function UploadEventsPage() {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const [file, setFile] = useState(null);
 
-  if (!API_BASE_URL) {
-    console.error("VITE_API_BASE_URL is undefined");
-    return <p>API URL not configured</p>;
-  }
+  const handleUpload = async () => {
+    if (!file) {
+      alert("Please select a CSV file");
+      return;
+    }
 
-  const handleUpload = async (e) => {
     const formData = new FormData();
-    formData.append("file", e.target.files[0]);
+    formData.append("file", file);
 
-    await fetch(`${API_BASE_URL}/api/upload`, {
+    const res = await fetch(`${API_BASE_URL}/api/upload`, {
       method: "POST",
       body: formData,
     });
 
-    alert("Upload successful");
+    if (res.ok) {
+      alert("Upload successful");
+    } else {
+      alert("Upload failed");
+    }
   };
 
-  return <input type="file" onChange={handleUpload} />;
+  return (
+    <>
+      <input
+        type="file"
+        accept=".csv"
+        onChange={(e) => setFile(e.target.files[0])}
+      />
+      <button onClick={handleUpload}>Upload Events</button>
+    </>
+  );
 }
 
 export default UploadEventsPage;
