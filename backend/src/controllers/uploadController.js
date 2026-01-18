@@ -1,6 +1,6 @@
 import fs from "fs";
 import csv from "csv-parser";
-import pool from "../db/pool.js";
+import pool from "../config/db.js";
 
 export const uploadEvents = async (req, res) => {
   if (!req.file) {
@@ -15,23 +15,22 @@ export const uploadEvents = async (req, res) => {
       events.push({
         name: row.name,
         gate: row.gate,
-        tickets: parseInt(row.tickets),
-        time: row.time
+        tickets: Number(row.tickets),
+        time: row.time,
       });
     })
     .on("end", async () => {
       try {
         for (const e of events) {
           await pool.query(
-            `INSERT INTO events (name, gate, tickets, time)
-             VALUES ($1, $2, $3, $4)`,
+            "INSERT INTO events (name, gate, tickets, time) VALUES ($1, $2, $3, $4)",
             [e.name, e.gate, e.tickets, e.time]
           );
         }
 
         res.json({
           message: "CSV uploaded and events saved",
-          inserted: events.length
+          inserted: events.length,
         });
       } catch (err) {
         console.error(err);
