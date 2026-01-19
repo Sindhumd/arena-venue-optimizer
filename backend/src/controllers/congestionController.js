@@ -1,4 +1,4 @@
-import pool from "../config/db.js";
+import pool from "../db/pool.js";
 
 export const getCongestion = async (req, res) => {
   try {

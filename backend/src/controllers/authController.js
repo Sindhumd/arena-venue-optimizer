@@ -1,6 +1,6 @@
 
 import jwt from "jsonwebtoken";
-import pool from "../config/db.js";
+import pool from "../db/pool.js";
 
 // SIGNUP
 export const signup = async (req, res) => {

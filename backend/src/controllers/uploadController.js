@@ -1,5 +1,5 @@
 import csv from "csv-parser";
-import pool from "../config/db.js";
+import pool from "../db/pool.js";
 import { Readable } from "stream";
 
 export const uploadEvents = async (req, res) => {
