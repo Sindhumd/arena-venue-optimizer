@@ -1,11 +1,15 @@
 import express from "express";
-import { getAllEvents } from "../models/eventModel.js";
+import pool from "../config/db.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const events = await getAllEvents();
-  res.json(events);
+  try {
+    const result = await pool.query("SELECT * FROM events ORDER BY id DESC");
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch events" });
+  }
 });
 
 export default router;
