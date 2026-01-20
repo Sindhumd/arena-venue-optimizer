@@ -13,10 +13,10 @@ export const uploadEventFile = async (req, res) => {
     .pipe(csv())
     .on("data", (row) => {
       events.push({
-        name: row.Name,
-        gate: row.Gate,
-        tickets: Number(row.Tickets),
-        time: row.Time,
+        name: row.Name || row.name,
+        gate: row.Gate|| row.gate,
+        tickets: Number(row.Tickets || row.tickets),
+        time: row.Time || row.time,
       });
     })
     .on("end", async () => {
