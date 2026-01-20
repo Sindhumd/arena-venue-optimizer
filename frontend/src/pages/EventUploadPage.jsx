@@ -45,7 +45,7 @@ export default function EventUploadPage() {
       };
     });
 
-    const res = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/upload",{
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/upload`,{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
