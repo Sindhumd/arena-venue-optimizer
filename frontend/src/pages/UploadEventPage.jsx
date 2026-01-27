@@ -11,7 +11,7 @@ function UploadEventsPage() {
     const formData = new FormData();
     formData.append("file", file);
 
-    const res = await fetch(`${API_BASE_URL}/api/upload`, {
+    const res = await fetch(`${API_BASE_URL}/api/upload/upload`, {
       method: "POST",
       body: formData,
     });
