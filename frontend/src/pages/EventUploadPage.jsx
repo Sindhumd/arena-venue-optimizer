@@ -14,7 +14,7 @@ export default function EventUploadPage() {
       formData.append("file", file); // MUST be "file"
 
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/upload/upload`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/upload`,
         {
           method: "POST",
           body: formData
