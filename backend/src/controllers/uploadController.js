@@ -3,26 +3,25 @@ import pool from "../db/pool.js";
 import { Readable } from "stream";
 
 export const uploadEvents = async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: "No file uploaded" });
-  }
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
-  const events = [];
+    const events = [];
+    const stream = Readable.from(req.file.buffer);
 
-  const stream = Readable.from(req.file.buffer);
-
-  stream
-    .pipe(csv())
-    .on("data", (row) => {
-      events.push({
-        name: row.name,
-        gate: row.gate,
-        tickets: Number(row.tickets),
-        time: row.time,
-      });
-    })
-    .on("end", async () => {
-      try {
+    stream
+      .pipe(csv())
+      .on("data", (row) => {
+        events.push({
+          name: row.name,
+          gate: row.gate,
+          tickets: Number(row.tickets),
+          time: row.time,
+        });
+      })
+      .on("end", async () => {
         for (const e of events) {
           await pool.query(
             "INSERT INTO events (name, gate, tickets, time) VALUES ($1, $2, $3, $4)",
@@ -31,12 +30,12 @@ export const uploadEvents = async (req, res) => {
         }
 
         res.json({
-          message: "CSV uploaded and events saved",
+          message: "CSV uploaded successfully",
           inserted: events.length,
         });
-      } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Database insert failed" });
-      }
-    });
+      });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Upload failed" });
+  }
 };
