@@ -9,26 +9,59 @@ export default function EventUploadPage() {
       return;
     }
 
-    const formData = new FormData();
-formData.append("file", file);
+    const text = await file.text();
 
-const res = await fetch(
-  `${import.meta.env.VITE_API_BASE_URL}/api/upload`,
-  {
-    method: "POST",
-    body: formData,
-  }
-);
-  
+    const lines = text
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0);
 
-if (!res.ok) {
-  const err = await res.json();
-  alert(err.message || "Upload failed");
-  return;
-}
+    if (lines.length < 2) {
+      alert("CSV file has no data rows");
+      return;
+    }
 
-alert("CSV uploaded successfully");
+    const events = lines.slice(1).map((line, index) => {
+      const parts = line.split(",");
+
+      if (parts.length < 4) {
+        throw new Error(`Invalid CSV format at line ${index + 2}`);
+      }
+
+      const name = parts[0]?.trim();
+      const gate = parts[1]?.trim();
+      const tickets = Number(parts[2]);
+      const time = parts[3]?.trim();
+
+      if (!name || !gate || isNaN(tickets) || !time) {
+        throw new Error(`Invalid data at line ${index + 2}`);
+      }
+
+      return {
+        name,
+        gate,
+        tickets,
+        time,
+      };
+    });
+
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/upload`,{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(events),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      alert(err.message || "Upload failed");
+      return;
+    }
+
+    alert("Events uploaded successfully");
   };
+
   return (
     <div className="p-6 flex justify-center">
       <div className="bg-white shadow-lg rounded-xl w-full max-w-xl p-8">
