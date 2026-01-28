@@ -23,6 +23,7 @@ export const uploadEvents = async (req, res) => {
     })
     .on("end", async () => {
       try {
+        await pool.query("DELETE FROM events");
         for (const e of events) {
           await pool.query(
             "INSERT INTO events (name, gate, tickets, time) VALUES ($1, $2, $3, $4)",
