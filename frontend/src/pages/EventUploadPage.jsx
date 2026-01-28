@@ -45,12 +45,13 @@ export default function EventUploadPage() {
       };
     });
 
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/upload`,{
+    // IMPORTANT: send FILE, not JSON
+    const formData = new FormData();
+    formData.append("file", file); // must be "file"
+
+    const res = await fetch(`${API_BASE_URL}/api/upload`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(events),
+      body: formData,
     });
 
     if (!res.ok) {
