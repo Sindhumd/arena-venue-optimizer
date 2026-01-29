@@ -36,6 +36,9 @@ app.use("/api/congestion", congestionRoutes);
 app.use("/api/analysis", analysisRoutes);
 app.use("/api", initDbRoute);
 
+await pool.query("DELETE FROM events");
+console.log("Events table cleared on server start");
+
 
 app.get("/", (req, res) => {
   res.send("Backend running");
