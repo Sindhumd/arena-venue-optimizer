@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/init-db", async (req, res) => {
   try {
-    // 1️⃣ Create table with ALL required columns
+    // Create table if not exists
     await pool.query(`
       CREATE TABLE IF NOT EXISTS events (
         id SERIAL PRIMARY KEY,
@@ -16,13 +16,14 @@ router.get("/init-db", async (req, res) => {
       )
     `);
 
-    // 2️⃣ CLEAR old data (THIS IS THE FIX YOU NEED)
+    // 🔴 THIS IS THE IMPORTANT LINE
+    // Clear old events so app starts EMPTY
     await pool.query("DELETE FROM events");
 
-    res.json({ message: "DB initialized and events cleared" });
+    res.send("DB initialized and events cleared");
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "DB init failed" });
+    res.status(500).send("DB init failed");
   }
 });
 
