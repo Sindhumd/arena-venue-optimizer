@@ -6,10 +6,29 @@ export default function VisitorsPage() {
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/visitors`)
       .then((res) => res.json())
-      .then((data) => calculateStats(data))
-      .catch(() =>
-        console.error("Failed to load visitor analytics")
-      );
+      .then((data) => {
+        // ✅ FIX: ensure data is array before processing
+        if (!Array.isArray(data)) {
+          setStats({
+            totalVisitors: 0,
+            peakHour: "N/A",
+            peakGate: "N/A",
+            zoneMap: {},
+          });
+          return;
+        }
+
+        calculateStats(data);
+      })
+      .catch(() => {
+        console.error("Failed to load visitor analytics");
+        setStats({
+          totalVisitors: 0,
+          peakHour: "N/A",
+          peakGate: "N/A",
+          zoneMap: {},
+        });
+      });
   }, []);
 
   const calculateStats = (data) => {
@@ -23,12 +42,12 @@ export default function VisitorsPage() {
       const tickets = Number(e.tickets) || 0;
       totalVisitors += tickets;
 
-      // 🔹 Time + Gate mapping
+      // Time + Gate mapping
       const hourGateKey = `${e.time}|${e.gate}`;
       hourGateMap[hourGateKey] =
         (hourGateMap[hourGateKey] || 0) + tickets;
 
-      // 🔹 Gate → Zone mapping
+      // Gate → Zone mapping
       const zone =
         e.gate === "Gate A"
           ? "Zone A"
@@ -39,7 +58,7 @@ export default function VisitorsPage() {
       zoneMap[zone] = (zoneMap[zone] || 0) + tickets;
     });
 
-    // 🔹 Find peak hour + gate
+    // Find peak hour + gate
     const peakKey = Object.keys(hourGateMap).reduce((a, b) =>
       hourGateMap[a] > hourGateMap[b] ? a : b
     );
@@ -120,7 +139,7 @@ export default function VisitorsPage() {
 
               return (
                 <div key={zone}>
-                  <div className="flex justify-between mb-1 text-sm font-medium">
+                  <div className="flex justify-between text-sm font-medium mb-1">
                     <span>{zone}</span>
                     <span>
                       {count} visitors ({percentage}%)
@@ -130,23 +149,21 @@ export default function VisitorsPage() {
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div
                       className={`${color} h-3 rounded-full`}
-                      style={{
-                        width: `${percentage}%`,
-                      }}
-                    ></div>
+                      style={{ width: `${percentage}%` }}
+                    />
                   </div>
                 </div>
               );
             }
           )}
         </div>
-
-        <p className="text-xs text-gray-400 mt-6">
-          * Visitor analytics are derived from uploaded
-          event ticket data. Real-time sensor feeds can
-          be integrated in future phases.
-        </p>
       </div>
+
+      <p className="text-xs text-gray-400 mt-6">
+        * Visitor analytics are derived from uploaded event
+        ticket data. Real-time sensor feeds can be integrated
+        in future phases.
+      </p>
     </div>
   );
 }

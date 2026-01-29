@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -9,11 +8,17 @@ export default function AlertsPage() {
     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/dashboard`)
       .then((res) => res.json())
       .then((data) => {
-        setAlerts(data.alerts || []);
+        // ✅ FIX: ensure alerts is always an array
+        if (Array.isArray(data?.alerts)) {
+          setAlerts(data.alerts);
+        } else {
+          setAlerts([]);
+        }
         setLoading(false);
       })
       .catch((err) => {
         console.error("Alerts fetch error", err);
+        setAlerts([]);
         setLoading(false);
       });
   }, []);
@@ -38,7 +43,7 @@ export default function AlertsPage() {
         Active Alerts
       </h1>
 
-      {/* 🔔 SUMMARY MESSAGE */}
+      {/* SUMMARY MESSAGE */}
       {alerts.length > 0 && (
         <div
           className={`mb-6 p-5 rounded-lg border ${
@@ -69,8 +74,7 @@ export default function AlertsPage() {
 
             const isHigh =
               text.includes("high") || text.includes("zone c");
-            const isMedium =
-              text.includes("zone b");
+            const isMedium = text.includes("zone b");
 
             const zoneMatch = alert.match(/Zone\s[A-C]/);
             const timeMatch = alert.match(/\d{2}:\d{2}/);
@@ -108,7 +112,7 @@ export default function AlertsPage() {
                   </span>
 
                   <span className="text-sm font-medium">
-                    ⏰ {time}
+                    🕒 {time}
                   </span>
                 </div>
 

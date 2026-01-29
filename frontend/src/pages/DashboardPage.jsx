@@ -10,7 +10,7 @@ export default function DashboardPage() {
     peakTime: "N/A",
     highRiskZones: 0,
     congestion: {},
-    heatmap: {}, // 👈 keep as object (Zone -> %)
+    heatmap: {},
     alerts: [],
     report: null,
   });
@@ -18,17 +18,23 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('${import.meta.env.VITE_API_BASE_URL}/api/dashboard')
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/dashboard`)
       .then((res) => res.json())
       .then((result) => {
-        setData({
+        setData((prev) => ({
+          ...prev,
           totalEvents: result.totalEvents ?? 0,
           peakTime: result.peakTime ?? "N/A",
-          highRiskZones: result.highRiskZones ?? 0,
-          congestion: result.congestion ?? {},
-          heatmap: result.heatmap ?? {}, // 👈 SAFE
-          alerts: result.alerts ??  null ,
-        });
+
+          // 🔑 BACKEND RETURNS `gates`, NOT `congestion`
+          congestion: result.gates ?? {},
+
+          // 🔑 These are NOT provided by dashboard API
+          highRiskZones: 0,
+          heatmap: {},
+          alerts: [],
+        }));
+
         setLoading(false);
       })
       .catch((err) => {
@@ -41,10 +47,8 @@ export default function DashboardPage() {
     return <p className="p-6 text-gray-500">Loading dashboard...</p>;
   }
 
-  // ✅ SAFE heatmap usage (NO forEach)
   const zoneDensity = data.heatmap || {};
 
-  // 🎨 Color logic (same as Heatmap)
   const getZoneColor = (value) => {
     if (value >= 100) return "bg-red-500";
     if (value >= 60) return "bg-yellow-400";
@@ -53,7 +57,6 @@ export default function DashboardPage() {
 
   return (
     <div className="p-6 space-y-8">
-      {/* TITLE */}
       <h1 className="text-2xl font-bold">Arena Operations Dashboard</h1>
 
       {/* KPI CARDS */}
@@ -96,33 +99,26 @@ export default function DashboardPage() {
         <Heatmap data={zoneDensity} />
       </div>
 
-      {/* ✅ VENUE ZONE MAP (Phase 4 – Optional but Implemented) */}
-<div className="bg-white shadow rounded-lg p-6">
-  <h2 className="text-lg font-semibold mb-4">
-    Venue Zone Map
-  </h2>
-  <VenueMap  data ={zoneDensity}/>
-</div>
-
-
-
-      {/* PHASE 4 – ANALYTICS REPORT */}
-
-
+      {/* VENUE MAP */}
       <div className="bg-white shadow rounded-lg p-6">
-  <h2 className="text-lg font-semibold mb-4">
-    Analytics Report
-  </h2>
+        <h2 className="text-lg font-semibold mb-4">
+          Venue Zone Map
+        </h2>
+        <VenueMap data={zoneDensity} />
+      </div>
 
-  <button
-    onClick={() => generateReport(data)}
-    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-  >
-    Download PDF Report
-  </button>
-</div>
-
-      
+      {/* REPORT */}
+      <div className="bg-white shadow rounded-lg p-6">
+        <h2 className="text-lg font-semibold mb-4">
+          Analytics Report
+        </h2>
+        <button
+          onClick={() => generateReport(data)}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Download PDF Report
+        </button>
+      </div>
 
       {/* ALERTS */}
       <div className="bg-white shadow rounded-lg p-6">
@@ -139,7 +135,7 @@ export default function DashboardPage() {
             {data.alerts.map((a, i) => (
               <li
                 key={i}
-                className="border-l-4 border-red-500 bg-red-50 p-4 rounded"
+                className="border border-red-500 bg-red-50 p-4 rounded"
               >
                 {a}
               </li>
@@ -147,11 +143,6 @@ export default function DashboardPage() {
           </ul>
         )}
       </div>
-
-      <p className="text-xs text-gray-400">
-        * Dashboard metrics are generated from uploaded event data and
-        simulated real-time analytics.
-      </p>
     </div>
   );
 }
