@@ -1,6 +1,6 @@
 import pool from "../db/pool.js";
 
-export const getDashboardData = async (req, res) => {
+export const getDashboard = async (req, res) => {
   try {
     const { rows } = await pool.query("SELECT * FROM events");
 
