@@ -34,7 +34,7 @@ app.use("/api/heatmap", heatmapRoutes);
 app.use("/api/visitors", visitorRoutes);
 app.use("/api/congestion", congestionRoutes);
 app.use("/api/analysis", analysisRoutes);
-app.use("/api/initDb", initDbRoute);
+app.use("/api", initDbRoute);
 
 
 app.get("/", (req, res) => {
