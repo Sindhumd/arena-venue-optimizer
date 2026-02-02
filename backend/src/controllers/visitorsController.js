@@ -5,7 +5,7 @@ export const getVisitors = async (req, res) => {
     const { rows } = await pool.query(
       "SELECT gate, tickets, time FROM events"
     );
-    res.json(rows); // ✅ frontend expects array
+    res.json(rows);
   } catch (err) {
     console.error(err);
     res.status(500).json([]);

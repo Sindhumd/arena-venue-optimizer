@@ -2,17 +2,17 @@ import pool from "../db/pool.js";
 
 export const getAlerts = async (req, res) => {
   try {
-    const { rows } = await pool.query(
-      "SELECT gate, tickets FROM events WHERE tickets > 1000"
+    const result = await pool.query(
+      "SELECT data FROM insights ORDER BY created_at DESC LIMIT 1"
     );
 
-    const alerts = rows.map(r => ({
-      message: `High congestion at ${r.gate}`
-    }));
+    if (result.rows.length === 0) {
+      return res.json([]);
+    }
 
-    res.json(alerts);
+    res.json(result.rows[0].data.alerts || []);
   } catch (err) {
     console.error(err);
-    res.status(400).json({ message: "Alerts failed" });
+    res.status(500).json([]);
   }
 };

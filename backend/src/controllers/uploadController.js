@@ -1,6 +1,5 @@
 import csv from "csv-parser";
 import pool from "../db/pool.js";
-import dataStore from "../dataStore.js";
 import { Readable } from "stream";
 
 export const uploadEvents = async (req, res) => {
@@ -23,11 +22,11 @@ export const uploadEvents = async (req, res) => {
     })
     .on("end", async () => {
       try {
-        /* ================================
-           1️⃣ EVENTS TABLE (Events page)
-        ================================= */
+        // Clear tables
         await pool.query("DELETE FROM events");
+        await pool.query("DELETE FROM insights");
 
+        // Insert events
         for (const e of events) {
           await pool.query(
             "INSERT INTO events (name, gate, tickets, time) VALUES ($1,$2,$3,$4)",
@@ -35,36 +34,21 @@ export const uploadEvents = async (req, res) => {
           );
         }
 
-        /* ================================
-           2️⃣ ANALYTICS (ALL OTHER PAGES)
-        ================================= */
-        await pool.query("DELETE FROM insights");
+        // ---------- ANALYTICS ----------
+        let gateA = 0, gateB = 0, gateC = 0;
 
-        let gateA = 0;
-        let gateB = 0;
-        let gateC = 0;
-
-        for (const e of events) {
+        events.forEach(e => {
           if (e.gate === "Gate A") gateA += e.tickets;
           if (e.gate === "Gate B") gateB += e.tickets;
           if (e.gate === "Gate C") gateC += e.tickets;
-        }
+        });
 
         const totalVisitors = gateA + gateB + gateC;
 
-        const peakEntryTime = "15:00";
+        const peakEntryTime = "18:00";
         const peakEntryGate =
-          gateC >= gateB && gateC >= gateA
-            ? "Gate C"
-            : gateB >= gateA
-            ? "Gate B"
-            : "Gate A";
-
-        const zoneWiseDistribution = {
-          "Zone A": gateA,
-          "Zone B": gateB,
-          "Zone C": gateC,
-        };
+          gateC >= gateB && gateC >= gateA ? "Gate C"
+          : gateB >= gateA ? "Gate B" : "Gate A";
 
         const heatmap = [
           { zone: "Zone A", density: gateA },
@@ -80,46 +64,18 @@ export const uploadEvents = async (req, res) => {
           });
         }
 
-        alerts.push({
-          level: "INFO",
-          message: "Expected peak crowd at 15:00",
-        });
-
-        /* ================================
-           3️⃣ SAVE TO DB (Insights table)
-        ================================= */
+        // 🔥 SAVE EXACT STRUCTURE FRONTEND NEEDS
         await pool.query(
           "INSERT INTO insights (data) VALUES ($1)",
-          [
-            {
-              totalVisitors,
-              peakEntryTime,
-              peakEntryGate,
-              zoneWiseDistribution,
-              heatmap,
-              congestion: totalVisitors,
-              alerts,
-            },
-          ]
+          [{
+            congestion: totalVisitors,
+            peakEntryTime,
+            peakEntryGate,
+            heatmap,
+            alerts,
+          }]
         );
 
-        /* ================================
-           🔴 4️⃣ THIS WAS MISSING (MAIN FIX)
-           Sync MEMORY for frontend pages
-        ================================= */
-        dataStore.analysis = {
-          totalVisitors,
-          peakEntryTime,
-          peakEntryGate,
-          zoneWiseDistribution,
-          heatmap,
-          congestion: totalVisitors,
-          alerts,
-        };
-
-        /* ================================
-           5️⃣ RESPONSE
-        ================================= */
         res.json({
           message: "CSV uploaded and analytics generated successfully",
           inserted: events.length,
