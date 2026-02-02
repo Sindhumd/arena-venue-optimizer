@@ -8,7 +8,8 @@ export const getDashboard = async (req, res) => {
       return res.json({
         totalEvents: 0,
         totalTickets: 0,
-        gates: [],
+        gateCongestion: [],
+        heatmap: [],
       });
     }
 
@@ -16,22 +17,35 @@ export const getDashboard = async (req, res) => {
     const gateMap = {};
 
     rows.forEach((r) => {
-      totalTickets += Number(r.tickets);
-      gateMap[r.gate] = (gateMap[r.gate] || 0) + Number(r.tickets);
+      const tickets = Number(r.tickets);
+      totalTickets += tickets;
+      gateMap[r.gate] = (gateMap[r.gate] || 0) + tickets;
     });
 
-    const gates = Object.entries(gateMap).map(([gate, tickets]) => ({
-      gate,
-      tickets,
-    }));
+    // ✅ Gate-wise congestion (Dashboard chart)
+    const gateCongestion = Object.entries(gateMap).map(
+      ([gate, tickets]) => ({
+        gate,
+        tickets,
+      })
+    );
+
+    // ✅ Heatmap (Dashboard + Insights UI)
+    const heatmap = Object.entries(gateMap).map(
+      ([gate, tickets]) => ({
+        zone: gate.replace("Gate", "Zone"),
+        density: tickets,
+      })
+    );
 
     return res.json({
       totalEvents: rows.length,
       totalTickets,
-      gates,
+      gateCongestion,
+      heatmap,
     });
   } catch (err) {
     console.error("DASHBOARD ERROR:", err);
-    return res.status(400).json({ message: "Dashboard failed" });
+    return res.status(500).json({ message: "Dashboard failed" });
   }
 };
