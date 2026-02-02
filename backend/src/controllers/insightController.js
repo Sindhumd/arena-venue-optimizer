@@ -10,17 +10,27 @@ export const getInsights = async (req, res) => {
       "SELECT data FROM insights ORDER BY created_at DESC LIMIT 1"
     );
 
+    // If no insights yet
     if (result.rows.length === 0) {
       return res.json({
         heatmap: [],
         congestion: 0,
         alerts: [],
         peakTime: null,
-        highRiskZones: 0
+        highRiskZones: 0,
       });
     }
 
-    res.json(result.rows[0].data);
+    const data = result.rows[0].data;
+
+    // 🔴 KEY MAPPING FIX (THIS IS THE REAL ISSUE)
+    res.json({
+      congestion: data.congestion || 0,
+      peakTime: data.peakEntryTime || null,
+      highRiskZones: data.alerts ? data.alerts.length : 0,
+      heatmap: data.heatmap || [],
+      alerts: data.alerts || [],
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to fetch insights" });
@@ -29,10 +39,10 @@ export const getInsights = async (req, res) => {
 
 /**
  * POST /api/insights/generate
- * OPTIONAL — insights already generated on upload
+ * (Insights are already generated during CSV upload)
  */
 export const generateInsights = async (req, res) => {
   return res.json({
-    message: "Insights are generated during CSV upload"
+    message: "Insights are generated during CSV upload",
   });
 };
