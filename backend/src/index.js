@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv"
+import pool from "./db/pool.js";
+
 
 import authRoutes from "./routes/authRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
@@ -43,6 +45,18 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () => {
-  console.log("Backend running on port $ {PORT} ");
-});
+async function startServer() {
+  try {
+    // ✅ Clear old events when server starts
+    await pool.query("DELETE FROM events");
+    console.log("Events table cleared on startup");
+
+    app.listen(PORT, () => {
+      console.log(`Backend running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("Server startup failed:", err);
+  }
+}
+
+startServer();
