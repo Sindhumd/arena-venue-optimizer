@@ -15,7 +15,7 @@ import heatmapRoutes from "./routes/heatmapRoutes.js";
 import visitorRoutes from "./routes/visitorRoutes.js";
 import congestionRoutes from "./routes/congestionRoutes.js";
 import analysisRoutes from "./routes/analysisRoutes.js";
-import initDbRoute from "./routes/initDb.js";
+//import initDbRoute from "./routes/initDb.js";
 
 
 dotenv.config();
@@ -36,7 +36,7 @@ app.use("/api/heatmap", heatmapRoutes);
 app.use("/api/visitors", visitorRoutes);
 app.use("/api/congestion", congestionRoutes);
 app.use("/api/analysis", analysisRoutes);
-app.use("/api", initDbRoute);
+//app.use("/api", initDbRoute);
 
 
 app.get("/", (req, res) => {
