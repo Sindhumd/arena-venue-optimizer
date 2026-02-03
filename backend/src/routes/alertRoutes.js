@@ -1,24 +1,27 @@
 import express from "express";
-import dataStore from "../datastore.js";
+import pool from "../db/pool.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    // ✅ If analysis not generated yet
-    if (!dataStore.analysis) {
+    // Get latest insights row
+    const result = await pool.query(
+      "SELECT data FROM insights ORDER BY id DESC LIMIT 1"
+    );
+
+    // If no insights yet
+    if (result.rows.length === 0) {
       return res.json([]);
     }
 
-    // ✅ If alerts not present
-    if (!dataStore.analysis.alerts) {
-      return res.json([]);
-    }
+    // Extract alerts safely
+    const alerts = result.rows[0].data?.alerts || [];
 
-    res.json(dataStore.analysis.alerts);
+    return res.json(alerts);
   } catch (err) {
     console.error("Alerts route error:", err);
-    res.status(500).json([]);
+    return res.status(500).json([]);
   }
 });
 
