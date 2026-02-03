@@ -1,8 +1,7 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 import pool from "./db/pool.js";
-
 
 import authRoutes from "./routes/authRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
@@ -15,8 +14,6 @@ import heatmapRoutes from "./routes/heatmapRoutes.js";
 import visitorRoutes from "./routes/visitorRoutes.js";
 import congestionRoutes from "./routes/congestionRoutes.js";
 import analysisRoutes from "./routes/analysisRoutes.js";
-//import initDbRoute from "./routes/initDb.js";
-
 
 dotenv.config();
 
@@ -36,8 +33,6 @@ app.use("/api/heatmap", heatmapRoutes);
 app.use("/api/visitors", visitorRoutes);
 app.use("/api/congestion", congestionRoutes);
 app.use("/api/analysis", analysisRoutes);
-//app.use("/api", initDbRoute);
-
 
 app.get("/", (req, res) => {
   res.send("Backend running");
@@ -47,10 +42,6 @@ const PORT = process.env.PORT || 4000;
 
 async function startServer() {
   try {
-    // ✅ Clear old events when server starts
-    await pool.query("DELETE FROM events");
-    console.log("Events table cleared on startup");
-
     app.listen(PORT, () => {
       console.log(`Backend running on port ${PORT}`);
     });
