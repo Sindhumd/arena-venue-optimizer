@@ -4,7 +4,7 @@ export default function VisitorsPage() {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/visitors`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/analysis`)
       .then((res) => res.json())
       .then((data) => {
         // ✅ FIX: ensure data is array before processing

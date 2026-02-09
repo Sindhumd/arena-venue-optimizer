@@ -5,7 +5,7 @@ export default function AlertsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/alerts`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/analysis`)
       .then((res) => res.json())
       .then((data) => {
         // ✅ FIX: ensure alerts is always an array
