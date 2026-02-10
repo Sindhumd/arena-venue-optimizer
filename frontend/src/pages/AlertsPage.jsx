@@ -8,9 +8,9 @@ export default function AlertsPage() {
     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/alerts`)
       .then((res) => res.json())
       .then((data) => {
-        // ✅ FIX: ensure alerts is always an array
-        if (Array.isArray(data?.alerts)) {
-          setAlerts(data.alerts);
+        // ✅ BACKEND RETURNS ARRAY DIRECTLY
+        if (Array.isArray(data)) {
+          setAlerts(data);
         } else {
           setAlerts([]);
         }
@@ -73,14 +73,22 @@ export default function AlertsPage() {
             const text = alert.toLowerCase();
 
             const isHigh =
-              text.includes("high") || text.includes("zone c");
-            const isMedium = text.includes("zone b");
+              text.includes("high") ||
+              text.includes("zone c");
+
+            const isMedium =
+              text.includes("zone b");
 
             const zoneMatch = alert.match(/Zone\s[A-C]/);
             const timeMatch = alert.match(/\d{2}:\d{2}/);
 
-            const zone = zoneMatch ? zoneMatch[0] : "Overall Venue";
-            const time = timeMatch ? timeMatch[0] : "N/A";
+            const zone = zoneMatch
+              ? zoneMatch[0]
+              : "Overall Venue";
+
+            const time = timeMatch
+              ? timeMatch[0]
+              : "N/A";
 
             const colorClass = isHigh
               ? "bg-red-50 border-red-500 text-red-700"
@@ -112,7 +120,7 @@ export default function AlertsPage() {
                   </span>
 
                   <span className="text-sm font-medium">
-                    🕒 {time}
+                    ⏰ {time}
                   </span>
                 </div>
 
@@ -122,7 +130,7 @@ export default function AlertsPage() {
                 </p>
 
                 {/* FOOTER */}
-                <div className="text-sm text-gray-700 flex gap-6">
+                <div className="text-sm text-gray-600 flex gap-6">
                   <span>📍 {zone}</span>
                   <span>📅 Today</span>
                 </div>
@@ -133,7 +141,7 @@ export default function AlertsPage() {
       )}
 
       <p className="text-xs text-gray-400 mt-6">
-        * Alerts are generated based on crowd density,
+        Alerts are generated based on crowd density,
         gate congestion, and predicted peak entry times
         derived from uploaded event data.
       </p>

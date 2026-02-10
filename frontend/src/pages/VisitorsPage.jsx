@@ -4,10 +4,9 @@ export default function VisitorsPage() {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/visitors`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/events`)
       .then((res) => res.json())
       .then((data) => {
-        // ✅ FIX: ensure data is array before processing
         if (!Array.isArray(data)) {
           setStats({
             totalVisitors: 0,
@@ -17,7 +16,6 @@ export default function VisitorsPage() {
           });
           return;
         }
-
         calculateStats(data);
       })
       .catch(() => {
@@ -34,7 +32,7 @@ export default function VisitorsPage() {
   const calculateStats = (data) => {
     let totalVisitors = 0;
 
-    // IMPORTANT: track time + gate together
+    // Track hour + gate together
     let hourGateMap = {};
     let zoneMap = {};
 
@@ -59,11 +57,15 @@ export default function VisitorsPage() {
     });
 
     // Find peak hour + gate
-    const peakKey = Object.keys(hourGateMap).reduce((a, b) =>
-      hourGateMap[a] > hourGateMap[b] ? a : b
-    );
+    let peakHour = "N/A";
+    let peakGate = "N/A";
 
-    const [peakHour, peakGate] = peakKey.split("|");
+    if (Object.keys(hourGateMap).length > 0) {
+      const peakKey = Object.keys(hourGateMap).reduce((a, b) =>
+        hourGateMap[a] > hourGateMap[b] ? a : b
+      );
+      [peakHour, peakGate] = peakKey.split("|");
+    }
 
     setStats({
       totalVisitors,
@@ -90,27 +92,21 @@ export default function VisitorsPage() {
       {/* SUMMARY CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div className="bg-white shadow rounded-lg p-5">
-          <p className="text-gray-500 text-sm">
-            Total Visitors
-          </p>
+          <p className="text-gray-500 text-sm">Total Visitors</p>
           <p className="text-3xl font-bold text-blue-600">
             {stats.totalVisitors}
           </p>
         </div>
 
         <div className="bg-white shadow rounded-lg p-5">
-          <p className="text-gray-500 text-sm">
-            Peak Entry Time
-          </p>
+          <p className="text-gray-500 text-sm">Peak Entry Time</p>
           <p className="text-3xl font-bold text-green-600">
             {stats.peakHour}
           </p>
         </div>
 
         <div className="bg-white shadow rounded-lg p-5">
-          <p className="text-gray-500 text-sm">
-            Peak Entry Gate
-          </p>
+          <p className="text-gray-500 text-sm">Peak Entry Gate</p>
           <p className="text-3xl font-bold text-purple-600">
             {stats.peakGate}
           </p>
@@ -126,9 +122,11 @@ export default function VisitorsPage() {
         <div className="space-y-4">
           {Object.entries(stats.zoneMap).map(
             ([zone, count]) => {
-              const percentage = Math.round(
-                (count / stats.totalVisitors) * 100
-              );
+              const percentage = stats.totalVisitors
+                ? Math.round(
+                    (count / stats.totalVisitors) * 100
+                  )
+                : 0;
 
               const color =
                 percentage >= 90
@@ -150,20 +148,20 @@ export default function VisitorsPage() {
                     <div
                       className={`${color} h-3 rounded-full`}
                       style={{ width: `${percentage}%` }}
-                    />
+                    ></div>
                   </div>
                 </div>
               );
             }
           )}
         </div>
-      </div>
 
-      <p className="text-xs text-gray-400 mt-6">
-        * Visitor analytics are derived from uploaded event
-        ticket data. Real-time sensor feeds can be integrated
-        in future phases.
-      </p>
+        <p className="text-xs text-gray-400 mt-6">
+          Visitor analytics are derived from uploaded event ticket
+          data. Real-time sensor feeds can be integrated in future
+          phases.
+        </p>
+      </div>
     </div>
   );
 }

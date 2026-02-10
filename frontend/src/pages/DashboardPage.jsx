@@ -18,23 +18,18 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/dashboard`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/analysis`)
       .then((res) => res.json())
       .then((result) => {
-        setData((prev) => ({
-          ...prev,
+        setData({
           totalEvents: result.totalEvents ?? 0,
-          peakTime: result.peakTime ?? "N/A",
-
-          // 🔑 BACKEND RETURNS `gates`, NOT `congestion`
-          congestion: result.gates ?? {},
-
-          // 🔑 These are NOT provided by dashboard API
-          highRiskZones: 0,
-          heatmap: {},
-          alerts: [],
-        }));
-
+          peakTime: result.peakEntryTime ?? "N/A",
+          highRiskZones: result.alerts ? result.alerts.length : 0,
+          congestion: result.gateCongestion ?? {},
+          heatmap: result.heatmap ?? {},
+          alerts: result.alerts ?? [],
+          report: result,
+        });
         setLoading(false);
       })
       .catch((err) => {
@@ -48,12 +43,6 @@ export default function DashboardPage() {
   }
 
   const zoneDensity = data.heatmap || {};
-
-  const getZoneColor = (value) => {
-    if (value >= 100) return "bg-red-500";
-    if (value >= 60) return "bg-yellow-400";
-    return "bg-green-500";
-  };
 
   return (
     <div className="p-6 space-y-8">
@@ -113,7 +102,7 @@ export default function DashboardPage() {
           Analytics Report
         </h2>
         <button
-          onClick={() => generateReport(data)}
+          onClick={() => generateReport(data.report)}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           Download PDF Report
@@ -128,7 +117,7 @@ export default function DashboardPage() {
 
         {data.alerts.length === 0 ? (
           <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded">
-            ✅ No active alerts. Venue operations are stable.
+            No active alerts. Venue operations are stable.
           </div>
         ) : (
           <ul className="space-y-3">
