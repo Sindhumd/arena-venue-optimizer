@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = `${import.meta.env.VITE_API_BASE_URL}/api/insights`;
+const API_BASE = `${import.meta.env.VITE_API_BASE_URL}/api/analysis`;
 
 export async function fetchInsights() {
   const res = await axios.get(API_BASE);
