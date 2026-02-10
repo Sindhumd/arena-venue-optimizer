@@ -32,7 +32,7 @@ export const getDashboard = async (req, res) => {
 
       return {
         gate,
-        percentage: Math.round((tickets / capacity) * 100)
+        percentage: Math.round((tickets / gateCapacity[gate]) * 100)
       };
     });
 
