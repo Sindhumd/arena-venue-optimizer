@@ -42,7 +42,12 @@ export default function DashboardPage() {
     return <p className="p-6 text-gray-500">Loading dashboard...</p>;
   }
 
-  const zoneDensity = data.heatmap || {};
+  const zoneDensity = Object.entries(data.heatmap || {}).map(
+  ([zone, value]) => ({
+    zone,
+    value
+  })
+);
 
   return (
     <div className="p-6 space-y-8">
