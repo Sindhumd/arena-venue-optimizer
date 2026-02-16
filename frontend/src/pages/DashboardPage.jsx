@@ -10,7 +10,7 @@ export default function DashboardPage() {
     peakTime: "N/A",
     highRiskZones: 0,
     congestion: {},
-    heatmap: {},
+    heatmap: [],
     alerts: [],
     report: null,
   });
@@ -26,7 +26,7 @@ export default function DashboardPage() {
           peakTime: result.peakEntryTime ?? "N/A",
           highRiskZones: result.alerts ? result.alerts.length : 0,
           congestion: result.gateCongestion ?? {},
-          heatmap: result.heatmap ?? {},
+          heatmap: result.heatmap ?? [],
           alerts: result.alerts ?? [],
           report: result,
         });
@@ -42,12 +42,9 @@ export default function DashboardPage() {
     return <p className="p-6 text-gray-500">Loading dashboard...</p>;
   }
 
-  const zoneDensity = Object.entries(data.heatmap || {}).map(
-  ([zone, value]) => ({
-    zone,
-    value
-  })
-);
+  const zoneDensity = Array.isArray(data.heatmap)
+    ? data.heatmap
+    : [];
 
   return (
     <div className="p-6 space-y-8">
