@@ -1,10 +1,5 @@
 import pool from "../db/pool.js";
-
-const GATE_CAPACITY = {
-  "Gate A": 300,
-  "Gate B": 400,
-  "Gate C": 500
-};
+import { analyzeEvents } from "../services/analysisService.js";
 
 export const getDashboard = async (req, res) => {
   try {
@@ -13,37 +8,20 @@ export const getDashboard = async (req, res) => {
     if (rows.length === 0) {
       return res.json({
         totalEvents: 0,
-        totalTickets: 0,
-        gates: []
+        congestion: {},
+        heatmap: [],
+        alerts: [],
+        highRiskZones: 0,
+        peakTime: "N/A"
       });
     }
 
-    let totalTickets = 0;
-    const gateMap = {};
+    const analysisResult = analyzeEvents(rows);
 
-    rows.forEach(r => {
-      const t = Number(r.tickets);
-      totalTickets += t;
-      gateMap[r.gate] = (gateMap[r.gate] || 0) + t;
-    });
-
-    const gates = Object.entries(gateMap).map(([gate, tickets]) => {
-      const capacity = GATE_CAPACITY[gate] || 300;
-
-      return {
-        gate,
-        percentage: Math.round((tickets / capacity) * 100)
-      };
-    });
-
-    res.json({
-      totalEvents: rows.length,
-      totalTickets,
-      gates
-    });
+    res.json(analysisResult);
 
   } catch (err) {
-    console.error(err);
+    console.error("Dashboard error:", err);
     res.status(500).json({ message: "Dashboard failed" });
   }
 };
