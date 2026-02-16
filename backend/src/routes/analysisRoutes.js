@@ -1,19 +1,28 @@
 import express from "express";
 import pool from "../db/pool.js";
+import { analyzeEvents } from "../services/analysisService.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT data FROM insights ORDER BY id DESC LIMIT 1"
-    );
+    const { rows } = await pool.query("SELECT * FROM events");
 
-    if (result.rows.length === 0) {
-      return res.json({});
+    if (rows.length === 0) {
+      return res.json({
+        totalEvents: 0,
+        congestion: {},
+        heatmap: [],
+        alerts: [],
+        highRiskZones: 0,
+        peakTime: "N/A"
+      });
     }
 
-    res.json(result.rows[0].data);
+    const result = analyzeEvents(rows);
+
+    res.json(result);
+
   } catch (err) {
     console.error("Analysis error:", err);
     res.status(500).json({});
