@@ -1,7 +1,5 @@
 export function analyzeEvents(events) {
 
-  const peakHour = {};
-
   const gateCapacity = {
     "Gate A": 20000,
     "Gate B": 15000,
@@ -14,12 +12,38 @@ export function analyzeEvents(events) {
     "Zone C": 8000
   };
 
-  // STEP 1: Find peak hour
+  const peakHour = {};
+  const gateTotals = {
+    "Gate A": 0,
+    "Gate B": 0,
+    "Gate C": 0
+  };
+
+  const zoneTotals = {
+    "Zone A": 0,
+    "Zone B": 0,
+    "Zone C": 0
+  };
+
+  let totalVisitors = 0;
+
+  // STEP 1: Calculate totals
   events.forEach(e => {
+
+    const tickets = Number(e.tickets) || 0;
+    totalVisitors += tickets;
+
+    gateTotals[e.gate] += tickets;
+
+    if (e.gate === "Gate A") zoneTotals["Zone A"] += tickets;
+    if (e.gate === "Gate B") zoneTotals["Zone B"] += tickets;
+    if (e.gate === "Gate C") zoneTotals["Zone C"] += tickets;
+
     const hour = e.time.split(":")[0];
-    peakHour[hour] = (peakHour[hour] || 0) + e.tickets;
+    peakHour[hour] = (peakHour[hour] || 0) + tickets;
   });
 
+  // STEP 2: Find peak time
   let peakTime = "N/A";
   let max = 0;
 
@@ -30,49 +54,24 @@ export function analyzeEvents(events) {
     }
   });
 
-  const peakHourOnly = peakTime.split(":")[0];
+  // STEP 3: Gate congestion (TOTAL not peak-only)
+  const congestion = {};
 
-  // STEP 2: Calculate traffic only for peak hour
-  const peakGateTraffic = {
-    "Gate A": 0,
-    "Gate B": 0,
-    "Gate C": 0
-  };
-
-  const peakZoneTraffic = {
-    "Zone A": 0,
-    "Zone B": 0,
-    "Zone C": 0
-  };
-
-  events.forEach(e => {
-    if (e.time.startsWith(peakHourOnly)) {
-
-      peakGateTraffic[e.gate] += e.tickets;
-
-      if (e.gate === "Gate A") peakZoneTraffic["Zone A"] += e.tickets;
-      if (e.gate === "Gate B") peakZoneTraffic["Zone B"] += e.tickets;
-      if (e.gate === "Gate C") peakZoneTraffic["Zone C"] += e.tickets;
-    }
+  Object.keys(gateTotals).forEach(gate => {
+    congestion[gate] = Math.round(
+      (gateTotals[gate] / gateCapacity[gate]) * 100
+    );
   });
 
-  const congestion = {};
+  // STEP 4: Heatmap
   const heatmap = [];
   const alerts = [];
   let highRiskZones = 0;
 
-  // STEP 3: Gate congestion at peak
-  Object.keys(peakGateTraffic).forEach(gate => {
-    congestion[gate] = Math.round(
-      (peakGateTraffic[gate] / gateCapacity[gate]) * 100
-    );
-  });
-
-  // STEP 4: Zone heatmap at peak
-  Object.keys(peakZoneTraffic).forEach(zone => {
+  Object.keys(zoneTotals).forEach(zone => {
 
     const percent = Math.round(
-      (peakZoneTraffic[zone] / zoneCapacity[zone]) * 100
+      (zoneTotals[zone] / zoneCapacity[zone]) * 100
     );
 
     heatmap.push({
@@ -90,6 +89,7 @@ export function analyzeEvents(events) {
 
   return {
     totalEvents: events.length,
+    totalVisitors,
     congestion,
     heatmap,
     alerts,
