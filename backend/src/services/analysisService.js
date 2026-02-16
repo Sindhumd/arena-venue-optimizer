@@ -3,15 +3,15 @@ export function analyzeEvents(events) {
   const peakHour = {};
 
   const gateCapacity = {
-    "Gate A": 20000,
-    "Gate B": 15000,
-    "Gate C": 10000
+    "Gate A": 30000,
+    "Gate B": 25000,
+    "Gate C": 15000
   };
 
   const zoneCapacity = {
-    "Zone A": 15000,
-    "Zone B": 12000,
-    "Zone C": 8000
+    "Zone A": 20000,
+    "Zone B": 15000,
+    "Zone C": 10000
   };
 
   // STEP 1: Find peak hour
