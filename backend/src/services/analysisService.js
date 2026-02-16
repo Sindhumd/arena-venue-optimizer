@@ -1,62 +1,80 @@
 export function analyzeEvents(events) {
-  const gateTraffic = {
+
+  const peakHour = {};
+
+  const gateCapacity = {
+    "Gate A": 20000,
+    "Gate B": 15000,
+    "Gate C": 10000
+  };
+
+  const zoneCapacity = {
+    "Zone A": 15000,
+    "Zone B": 12000,
+    "Zone C": 8000
+  };
+
+  // STEP 1: Find peak hour
+  events.forEach(e => {
+    const hour = e.time.split(":")[0];
+    peakHour[hour] = (peakHour[hour] || 0) + e.tickets;
+  });
+
+  let peakTime = "N/A";
+  let max = 0;
+
+  Object.keys(peakHour).forEach(h => {
+    if (peakHour[h] > max) {
+      max = peakHour[h];
+      peakTime = `${h}:00`;
+    }
+  });
+
+  const peakHourOnly = peakTime.split(":")[0];
+
+  // STEP 2: Calculate traffic only for peak hour
+  const peakGateTraffic = {
     "Gate A": 0,
     "Gate B": 0,
     "Gate C": 0
   };
 
-  const zoneTraffic = {
+  const peakZoneTraffic = {
     "Zone A": 0,
     "Zone B": 0,
     "Zone C": 0
   };
 
-  const peakHour = {};
-  const alerts = [];
-
-  // Capacities decided by venue design (realistic)
-  const gateCapacity = {
-    "Gate A": 20000,
-    "Gate B": 12000,
-    "Gate C": 8000
-  };
-
-  const zoneCapacity = {
-    "Zone A": 15000,
-    "Zone B": 10000,
-    "Zone C": 6000
-  };
-
   events.forEach(e => {
-    // Gate congestion
-    if (gateTraffic[e.gate] !== undefined) {
-      gateTraffic[e.gate] += e.tickets;
+    if (e.time.startsWith(peakHourOnly)) {
+
+      peakGateTraffic[e.gate] += e.tickets;
+
+      if (e.gate === "Gate A") peakZoneTraffic["Zone A"] += e.tickets;
+      if (e.gate === "Gate B") peakZoneTraffic["Zone B"] += e.tickets;
+      if (e.gate === "Gate C") peakZoneTraffic["Zone C"] += e.tickets;
     }
-
-    // Zone mapping (assignment expectation)
-    if (e.gate === "Gate A") zoneTraffic["Zone A"] += e.tickets;
-    if (e.gate === "Gate B") zoneTraffic["Zone B"] += e.tickets;
-    if (e.gate === "Gate C") zoneTraffic["Zone C"] += e.tickets;
-
-    // Peak hour
-    const hour = e.time.split(":")[0];
-    peakHour[hour] = (peakHour[hour] || 0) + e.tickets;
   });
 
   const congestion = {};
   const heatmap = [];
+  const alerts = [];
   let highRiskZones = 0;
 
-  Object.keys(gateTraffic).forEach(gate => {
+  // STEP 3: Gate congestion at peak
+  Object.keys(peakGateTraffic).forEach(gate => {
     congestion[gate] = Math.round(
-      (gateTraffic[gate] / gateCapacity[gate]) * 100
+      (peakGateTraffic[gate] / gateCapacity[gate]) * 100
     );
   });
 
-  Object.keys(zoneTraffic).forEach(zone => {
+  // STEP 4: Zone heatmap at peak
+  Object.keys(peakZoneTraffic).forEach(zone => {
+
     const percent = Math.round(
-      (zoneTraffic[zone] / zoneCapacity[zone]) * 100
+      (peakZoneTraffic[zone] / zoneCapacity[zone]) * 100
     );
+
     heatmap.push({
       zone,
       value: percent
@@ -65,15 +83,6 @@ export function analyzeEvents(events) {
     if (percent >= 80) {
       highRiskZones++;
       alerts.push(`High crowd density detected in ${zone}`);
-    }
-  });
-
-  let peakTime = "N/A";
-  let max = 0;
-  Object.keys(peakHour).forEach(h => {
-    if (peakHour[h] > max) {
-      max = peakHour[h];
-      peakTime = `${h}:00`;
     }
   });
 
