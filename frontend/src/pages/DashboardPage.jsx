@@ -23,9 +23,9 @@ export default function DashboardPage() {
       .then((result) => {
         setData({
           totalEvents: result.totalEvents ?? 0,
-          peakTime: result.peakEntryTime ?? "N/A",
-          highRiskZones: result.alerts ? result.alerts.length : 0,
-          congestion: result.gateCongestion ?? {},
+          peakTime: result.peakTime ?? "N/A",
+          highRiskZones: result.highRiskZones ?? 0,
+          congestion: result.congestion ?? {},
           heatmap: result.heatmap ?? [],
           alerts: result.alerts ?? [],
           report: result,
@@ -48,7 +48,9 @@ export default function DashboardPage() {
 
   return (
     <div className="p-6 space-y-8">
-      <h1 className="text-2xl font-bold">Arena Operations Dashboard</h1>
+      <h1 className="text-2xl font-bold">
+        Arena Operations Dashboard
+      </h1>
 
       {/* KPI CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
