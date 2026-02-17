@@ -53,21 +53,28 @@ export default function InsightPage() {
       <h1 className="text-2xl font-bold">Venue Insights</h1>
 
       {/* SUMMARY CARDS */}
-      <div className="bg-white shadow rounded-lg p-6 space-y-2 border">
-        <p>
-          <strong>Congestion:</strong>{" "}
-          {insights.congestion ?? "N/A"}
-        </p>
-        <p>
-          <strong>Peak Time:</strong>{" "}
-          {insights.peakTime ?? "N/A"}
-        </p>
-        <p>
-          <strong>High Risk Zones:</strong>{" "}
-          {insights.highRiskZones ?? 0}
-        </p>
-      </div>
+      {/* SUMMARY CARDS */}
+<div className="bg-white shadow rounded-lg p-6 space-y-4 border">
+  
+  <div>
+    <strong>Peak Time:</strong> {insights.peakTime ?? "N/A"}
+  </div>
 
+  <div>
+    <strong>High Risk Zones:</strong> {insights.highRiskZones ?? 0}
+  </div>
+
+  <div>
+    <strong>Gate Congestion:</strong>
+    {insights.congestion &&
+      Object.entries(insights.congestion).map(([gate, percent]) => (
+        <p key={gate}>
+          {gate}: {percent}%
+        </p>
+      ))}
+  </div>
+
+</div>
       {/* HEATMAP */}
       <div className="bg-white shadow rounded-lg p-6 border">
         <h2 className="text-lg font-semibold mb-4">Heatmap</h2>
