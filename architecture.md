@@ -1,145 +1,89 @@
-# Arena Venue Optimizer – Architecture
+# Arena Venue Optimizer Architecture
 
-## Overview
-Arena Venue Optimizer is a full-stack web application designed to analyze
-venue event data and provide operational insights such as congestion levels,
-crowd density heatmaps, peak times, high-risk zones, and alerts.
+------------------------------------------------------------
 
-The system follows a **client–server architecture** with clear separation
-between frontend, backend, and analysis logic.
+# System Overview
 
----
+Arena Venue Optimizer follows a client server architecture.
 
-## High-Level Architecture
+The frontend communicates with the backend using REST APIs.
+The backend processes uploaded event data and generates analytics insights.
 
-Frontend (React + Vite)
-        |
-        | REST API (HTTP)
-        v
-Backend (Node.js + Express)
-        |
-        | Analysis Logic
-        v
-In-Memory Data Store (CSV-based)
+------------------------------------------------------------
 
----
+# Architecture Components
 
-## Components Description
+1. Frontend
 
-### 1. Frontend (Presentation Layer)
+- Built using React
+- Uses Axios to call backend APIs
+- Displays congestion chart
+- Displays zone heatmap
+- Displays alerts and visitor analytics
+- Applies color rules based on percentage values
 
-**Technology**
-- React
-- Vite
-- Tailwind CSS
+2. Backend
 
-**Responsibilities**
-- Upload event CSV files
-- Display dashboard KPIs
-- Visualize congestion charts
-- Render heatmap and venue zone map
-- Show alerts and insights
+- Built using Node.js and Express
+- Handles CSV upload using Multer
+- Stores event data in memory
+- Provides REST APIs
+- Contains analysis service for analytics computation
 
-**Pages**
-- Login Page
-- Event Upload Page
-- Dashboard Page
-- Insights Page
-- Alerts Page
+3. Analysis Service
 
----
+Core module responsible for:
 
-### 2. Backend (Application Layer)
-
-**Technology**
-- Node.js
-- Express.js
-
-**Responsibilities**
-- Accept CSV uploads
-- Parse event data
-- Trigger event analysis
-- Provide analytics via REST APIs
-
-**Key Endpoints**
-- `/api/events/upload`
-- `/api/dashboard`
-- `/api/heatmap`
-- `/api/insights`
-
----
-
-### 3. Analysis Service (Business Logic)
-
-**Purpose**
-Convert raw event data into meaningful operational insights.
-
-**Processing Includes**
-- Aggregating tickets by gate
-- Calculating congestion percentage
-- Determining peak entry times
-- Identifying high-risk zones
+- Aggregating event ticket data
+- Identifying peak hour
+- Calculating gate congestion percentage
+- Mapping gates to zones
+- Calculating zone density percentage
+- Identifying high risk zones
 - Generating alerts
 
-**Output**
-- Structured analytics object used by dashboard and insights
+------------------------------------------------------------
 
----
+# Data Flow
 
-### 4. Data Storage
+1. User uploads CSV file via frontend
+2. Backend parses and stores event records
+3. User triggers insights generation
+4. Analysis service calculates metrics
+5. Dashboard endpoint returns structured analytics
+6. Frontend renders congestion, heatmap and alerts
 
-**Type**
-- In-memory datastore (JavaScript object)
+------------------------------------------------------------
 
-**Reason**
-- Lightweight
-- Fast access
-- No external database dependency (assignment-focused)
+# Logical Flow
 
-**Stored Data**
-- Uploaded events
-- Latest analysis results
-- Heatmap values
+Event Data
+   ↓
+Peak Time Detection
+   ↓
+Gate Congestion Calculation
+   ↓
+Zone Density Calculation
+   ↓
+High Risk Evaluation
+   ↓
+Alert Generation
+   ↓
+Dashboard Response
 
----
+------------------------------------------------------------
 
-### 5. Deployment (Containerization)
+# Deployment Architecture
 
-**Technology**
-- Docker
-- Docker Compose
+Frontend deployed separately
+Backend deployed separately
+Communication via HTTP REST APIs
 
-**Services**
-- Frontend container
-- Backend container
+------------------------------------------------------------
 
-**Benefits**
-- Easy local deployment
-- Environment consistency
-- Reproducible builds
+# Future Improvements
 
----
-
-## Data Flow
-
-1. User uploads event CSV from frontend
-2. Backend parses and stores event data
-3. Analysis service processes event data
-4. Insights are generated and stored
-5. Frontend fetches analyzed data via APIs
-6. Dashboard and visualizations are rendered
-
----
-
-## Design Principles
-- Separation of concerns
-- Stateless APIs
-- Modular analysis logic
-- Scalable architecture
-
----
-
-## Summary
-The architecture is simple, scalable, and aligned with the assignment
-requirements. All analytics are derived from uploaded event data and
-visualized through a responsive frontend dashboard.
+- Replace in memory storage with database
+- Add real time monitoring using WebSockets
+- Integrate external prediction service
+- Add historical analytics tracking
