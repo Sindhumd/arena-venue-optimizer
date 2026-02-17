@@ -14,10 +14,19 @@ export function analyzeEvents(events) {
     "Zone C": 8000
   };
 
-  // STEP 1: Find peak hour
+  // --------------------------
+  // STEP 1: Total Visitors
+  // --------------------------
+  const totalVisitors = events.reduce((sum, e) => {
+    return sum + Number(e.tickets);
+  }, 0);
+
+  // --------------------------
+  // STEP 2: Find Peak Hour
+  // --------------------------
   events.forEach(e => {
     const hour = e.time.split(":")[0];
-    peakHour[hour] = (peakHour[hour] || 0) + e.tickets;
+    peakHour[hour] = (peakHour[hour] || 0) + Number(e.tickets);
   });
 
   let peakTime = "N/A";
@@ -32,7 +41,9 @@ export function analyzeEvents(events) {
 
   const peakHourOnly = peakTime.split(":")[0];
 
-  // STEP 2: Calculate traffic only for peak hour
+  // --------------------------
+  // STEP 3: Peak Hour Traffic
+  // --------------------------
   const peakGateTraffic = {
     "Gate A": 0,
     "Gate B": 0,
@@ -47,28 +58,32 @@ export function analyzeEvents(events) {
 
   events.forEach(e => {
     if (e.time.startsWith(peakHourOnly)) {
+      peakGateTraffic[e.gate] += Number(e.tickets);
 
-      peakGateTraffic[e.gate] += e.tickets;
-
-      if (e.gate === "Gate A") peakZoneTraffic["Zone A"] += e.tickets;
-      if (e.gate === "Gate B") peakZoneTraffic["Zone B"] += e.tickets;
-      if (e.gate === "Gate C") peakZoneTraffic["Zone C"] += e.tickets;
+      if (e.gate === "Gate A") peakZoneTraffic["Zone A"] += Number(e.tickets);
+      if (e.gate === "Gate B") peakZoneTraffic["Zone B"] += Number(e.tickets);
+      if (e.gate === "Gate C") peakZoneTraffic["Zone C"] += Number(e.tickets);
     }
   });
 
+  // --------------------------
+  // STEP 4: Gate Congestion %
+  // --------------------------
   const congestion = {};
-  const heatmap = [];
-  const alerts = [];
-  let highRiskZones = 0;
 
-  // STEP 3: Gate congestion at peak
   Object.keys(peakGateTraffic).forEach(gate => {
     congestion[gate] = Math.round(
       (peakGateTraffic[gate] / gateCapacity[gate]) * 100
     );
   });
 
-  // STEP 4: Zone heatmap at peak
+  // --------------------------
+  // STEP 5: Zone Heatmap %
+  // --------------------------
+  const heatmap = [];
+  const alerts = [];
+  let highRiskZones = 0;
+
   Object.keys(peakZoneTraffic).forEach(zone => {
 
     const percent = Math.round(
@@ -90,6 +105,7 @@ export function analyzeEvents(events) {
 
   return {
     totalEvents: events.length,
+    totalVisitors,
     congestion,
     heatmap,
     alerts,
