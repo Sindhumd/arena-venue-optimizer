@@ -1,32 +1,18 @@
 import pool from "../db/pool.js";
 
 export const getInsights = async (req, res) => {
-  const r = await pool.query(
-    "SELECT data FROM insights ORDER BY created_at DESC LIMIT 1"
-  );
+  try {
+    const { rows } = await pool.query(
+      "SELECT data FROM insights ORDER BY id DESC LIMIT 1"
+    );
 
-  if (!r.rows.length) {
-    return res.json({
-      congestion: 0,
-      peakTime: null,
-      highRiskZones: 0,
-      heatmap: [],
-      alerts: []
-    });
+    if (rows.length === 0) {
+      return res.json({});
+    }
+
+    res.json(rows[0].data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch insights" });
   }
-
-  const d = r.rows[0].data;
-
-  res.json({
-    congestion: d.totalVisitors,
-    peakTime: d.peakEntryTime,
-    highRiskZones: d.alerts.length,
-    heatmap: d.heatmap,
-    alerts: d.alerts
-  });
-};
-
-export const generateInsights = async (req, res) => {
-  // simply reuse existing data
-  return res.json({ message: "Insights already generated on CSV upload" });
 };
