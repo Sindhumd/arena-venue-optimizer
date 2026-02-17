@@ -2,16 +2,17 @@ import pool from "../db/pool.js";
 
 export const getCongestion = async (req, res) => {
   try {
-    const { rows } = await pool.query("SELECT time, tickets FROM events");
+    const { rows } = await pool.query(
+      "SELECT data FROM insights ORDER BY id DESC LIMIT 1"
+    );
 
-    const result = rows.map(r => ({
-      time: r.time,
-      percentage: Math.min(100, Math.round((r.tickets / 1000) * 100))
-    }));
+    if (rows.length === 0) {
+      return res.json({});
+    }
 
-    res.json(result);
+    res.json(rows[0].data.congestion || {});
   } catch (err) {
     console.error(err);
-    res.status(400).json({ message: "Congestion failed" });
+    res.status(500).json({ message: "Failed to fetch congestion" });
   }
 };

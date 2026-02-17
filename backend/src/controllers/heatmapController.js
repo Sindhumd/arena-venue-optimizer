@@ -1,25 +1,18 @@
 import pool from "../db/pool.js";
 
-const GATE_CAPACITY = {
-  "Gate A": 300,
-  "Gate B": 400,
-  "Gate C": 500
-};
-
 export const getHeatmap = async (req, res) => {
   try {
     const { rows } = await pool.query(
-      "SELECT gate, SUM(tickets) as total FROM events GROUP BY gate"
+      "SELECT data FROM insights ORDER BY id DESC LIMIT 1"
     );
 
-    const heatmap = rows.map(r => ({
-      gate: r.gate,
-      value: Math.round((r.total / GATE_CAPACITY[r.gate]) * 100)
-    }));
+    if (rows.length === 0) {
+      return res.json([]);
+    }
 
-    res.json(heatmap);
+    res.json(rows[0].data.heatmap || []);
   } catch (err) {
     console.error(err);
-    res.status(400).json({ message: "Heatmap failed" });
+    res.status(500).json({ message: "Failed to fetch heatmap" });
   }
 };
