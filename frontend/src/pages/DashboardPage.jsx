@@ -46,37 +46,91 @@ export default function DashboardPage() {
     ? data.heatmap
     : [];
 
-  /* ---------------- SMART RECOMMENDATION LOGIC ---------------- */
+  /* -------- SMART ANALYSIS ENGINE -------- */
 
   const recommendations = [];
+  const congestionData = data.congestion || {};
 
-  const maxZoneDensity =
-    zoneDensity.length > 0
-      ? Math.max(...zoneDensity.map((z) => z.value || 0))
-      : 0;
+  let highDensityZones = [];
+  let mediumDensityZones = [];
 
-  const maxGateCongestion =
-    Object.keys(data.congestion).length > 0
-      ? Math.max(...Object.values(data.congestion))
-      : 0;
+  zoneDensity.forEach((zone) => {
+    const density = zone.value || 0;
 
-  if (maxZoneDensity > 85) {
-    recommendations.push("High crowd density detected. Deploy extra staff immediately.");
+    if (density >= 85) {
+      highDensityZones.push(zone.name || "Unknown Zone");
+    } else if (density >= 60) {
+      mediumDensityZones.push(zone.name || "Unknown Zone");
+    }
+  });
+
+  /* Zone Analysis */
+
+  if (highDensityZones.length > 0) {
+    recommendations.push(
+      `Critical crowd density in ${highDensityZones.join(
+        ", "
+      )}. Deploy emergency staff and restrict inflow.`
+    );
   }
 
-  if (maxGateCongestion > 70) {
-    recommendations.push("Gate congestion is high. Open additional entry lane.");
+  if (mediumDensityZones.length > 0) {
+    recommendations.push(
+      `Moderate crowd build-up in ${mediumDensityZones.join(
+        ", "
+      )}. Monitor closely and prepare standby staff.`
+    );
   }
 
-  if (data.alerts.length > 0) {
-    recommendations.push("Active alerts present. Immediate attention required.");
+  /* Gate Analysis */
+
+  let highestGate = null;
+  let highestGateValue = 0;
+
+  Object.entries(congestionData).forEach(([gate, value]) => {
+    if (value > highestGateValue) {
+      highestGateValue = value;
+      highestGate = gate;
+    }
+  });
+
+  if (highestGateValue >= 75) {
+    recommendations.push(
+      `${highestGate} congestion at ${highestGateValue}%. Open additional lanes or reroute crowd.`
+    );
   }
 
-  if (data.peakTime !== "N/A") {
-    recommendations.push(`Prepare operations for peak time at ${data.peakTime}.`);
+  /* Risk Score Calculation */
+
+  const overallRiskScore =
+    highDensityZones.length * 2 +
+    mediumDensityZones.length * 1 +
+    (highestGateValue > 70 ? 2 : 0) +
+    (data.alerts.length > 0 ? 2 : 0);
+
+  if (overallRiskScore >= 5) {
+    recommendations.push(
+      "Overall venue risk level: HIGH. Activate full safety protocol."
+    );
+  } else if (overallRiskScore >= 3) {
+    recommendations.push(
+      "Overall venue risk level: MODERATE. Increase monitoring."
+    );
+  } else {
+    recommendations.push(
+      "Overall venue risk level: LOW. Operations stable."
+    );
   }
 
-  /* ------------------------------------------------------------- */
+  /* Peak Time */
+
+  if (data.peakTime && data.peakTime !== "N/A") {
+    recommendations.push(
+      `Peak expected at ${data.peakTime}. Allocate maximum staff before this time.`
+    );
+  }
+
+  /* ---------------------------------------- */
 
   return (
     <div className="p-6 space-y-8">
@@ -138,22 +192,16 @@ export default function DashboardPage() {
           Smart Recommendations
         </h2>
 
-        {recommendations.length === 0 ? (
-          <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded">
-            No immediate action required. Venue operations are stable.
-          </div>
-        ) : (
-          <ul className="space-y-3">
-            {recommendations.map((rec, index) => (
-              <li
-                key={index}
-                className="border border-yellow-400 bg-yellow-50 p-4 rounded"
-              >
-                {rec}
-              </li>
-            ))}
-          </ul>
-        )}
+        <ul className="space-y-3">
+          {recommendations.map((rec, index) => (
+            <li
+              key={index}
+              className="border border-yellow-400 bg-yellow-50 p-4 rounded"
+            >
+              {rec}
+            </li>
+          ))}
+        </ul>
       </div>
 
       {/* REPORT */}
