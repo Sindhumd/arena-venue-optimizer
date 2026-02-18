@@ -46,6 +46,38 @@ export default function DashboardPage() {
     ? data.heatmap
     : [];
 
+  /* ---------------- SMART RECOMMENDATION LOGIC ---------------- */
+
+  const recommendations = [];
+
+  const maxZoneDensity =
+    zoneDensity.length > 0
+      ? Math.max(...zoneDensity.map((z) => z.value || 0))
+      : 0;
+
+  const maxGateCongestion =
+    Object.keys(data.congestion).length > 0
+      ? Math.max(...Object.values(data.congestion))
+      : 0;
+
+  if (maxZoneDensity > 85) {
+    recommendations.push("High crowd density detected. Deploy extra staff immediately.");
+  }
+
+  if (maxGateCongestion > 70) {
+    recommendations.push("Gate congestion is high. Open additional entry lane.");
+  }
+
+  if (data.alerts.length > 0) {
+    recommendations.push("Active alerts present. Immediate attention required.");
+  }
+
+  if (data.peakTime !== "N/A") {
+    recommendations.push(`Prepare operations for peak time at ${data.peakTime}.`);
+  }
+
+  /* ------------------------------------------------------------- */
+
   return (
     <div className="p-6 space-y-8">
       <h1 className="text-2xl font-bold">
@@ -98,6 +130,30 @@ export default function DashboardPage() {
           Venue Zone Map
         </h2>
         <VenueMap data={zoneDensity} />
+      </div>
+
+      {/* SMART RECOMMENDATIONS */}
+      <div className="bg-white shadow rounded-lg p-6">
+        <h2 className="text-lg font-semibold mb-4">
+          Smart Recommendations
+        </h2>
+
+        {recommendations.length === 0 ? (
+          <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded">
+            No immediate action required. Venue operations are stable.
+          </div>
+        ) : (
+          <ul className="space-y-3">
+            {recommendations.map((rec, index) => (
+              <li
+                key={index}
+                className="border border-yellow-400 bg-yellow-50 p-4 rounded"
+              >
+                {rec}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       {/* REPORT */}
