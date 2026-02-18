@@ -55,16 +55,28 @@ export default function DashboardPage() {
   let mediumDensityZones = [];
 
   zoneDensity.forEach((zone) => {
-    const density = zone.value || 0;
+    // Flexible density detection
+    const density =
+      zone.value ??
+      zone.density ??
+      zone.score ??
+      0;
+
+    // Flexible zone name detection
+    const zoneName =
+      zone.name ??
+      zone.zone ??
+      zone.id ??
+      "Zone";
 
     if (density >= 85) {
-      highDensityZones.push(zone.name || "Unknown Zone");
+      highDensityZones.push(zoneName);
     } else if (density >= 60) {
-      mediumDensityZones.push(zone.name || "Unknown Zone");
+      mediumDensityZones.push(zoneName);
     }
   });
 
-  /* Zone Analysis */
+  /* Zone Recommendations */
 
   if (highDensityZones.length > 0) {
     recommendations.push(
@@ -122,7 +134,7 @@ export default function DashboardPage() {
     );
   }
 
-  /* Peak Time */
+  /* Peak Time Recommendation */
 
   if (data.peakTime && data.peakTime !== "N/A") {
     recommendations.push(
