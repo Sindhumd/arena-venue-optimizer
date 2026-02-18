@@ -46,7 +46,7 @@ export default function DashboardPage() {
     ? data.heatmap
     : [];
 
-  /* -------- SMART ANALYSIS ENGINE -------- */
+  /* ================= SMART ANALYSIS ENGINE ================= */
 
   const recommendations = [];
   const congestionData = data.congestion || {};
@@ -55,14 +55,12 @@ export default function DashboardPage() {
   let mediumDensityZones = [];
 
   zoneDensity.forEach((zone) => {
-    // Flexible density detection
     const density =
       zone.value ??
       zone.density ??
       zone.score ??
       0;
 
-    // Flexible zone name detection
     const zoneName =
       zone.name ??
       zone.zone ??
@@ -75,8 +73,6 @@ export default function DashboardPage() {
       mediumDensityZones.push(zoneName);
     }
   });
-
-  /* Zone Recommendations */
 
   if (highDensityZones.length > 0) {
     recommendations.push(
@@ -94,8 +90,6 @@ export default function DashboardPage() {
     );
   }
 
-  /* Gate Analysis */
-
   let highestGate = null;
   let highestGateValue = 0;
 
@@ -111,8 +105,6 @@ export default function DashboardPage() {
       `${highestGate} congestion at ${highestGateValue}%. Open additional lanes or reroute crowd.`
     );
   }
-
-  /* Risk Score Calculation */
 
   const overallRiskScore =
     highDensityZones.length * 2 +
@@ -134,15 +126,13 @@ export default function DashboardPage() {
     );
   }
 
-  /* Peak Time Recommendation */
-
   if (data.peakTime && data.peakTime !== "N/A") {
     recommendations.push(
       `Peak expected at ${data.peakTime}. Allocate maximum staff before this time.`
     );
   }
 
-  /* ---------------------------------------- */
+  /* ========================================================== */
 
   return (
     <div className="p-6 space-y-8">
@@ -205,14 +195,24 @@ export default function DashboardPage() {
         </h2>
 
         <ul className="space-y-3">
-          {recommendations.map((rec, index) => (
-            <li
-              key={index}
-              className="border border-yellow-400 bg-yellow-50 p-4 rounded"
-            >
-              {rec}
-            </li>
-          ))}
+          {recommendations.map((rec, index) => {
+            let style = "border border-green-300 bg-green-50";
+
+            if (rec.includes("Critical") || rec.includes("HIGH")) {
+              style = "border border-red-500 bg-red-50";
+            } else if (rec.includes("Moderate")) {
+              style = "border border-yellow-400 bg-yellow-50";
+            }
+
+            return (
+              <li
+                key={index}
+                className={`${style} p-4 rounded`}
+              >
+                {rec}
+              </li>
+            );
+          })}
         </ul>
       </div>
 
