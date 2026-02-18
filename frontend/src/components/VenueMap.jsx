@@ -1,19 +1,11 @@
 import { useEffect, useState } from "react";
 
 export default function VenueMap({ data }) {
-  const [zoneData, setZoneData] = useState({
-    "Zone A": 0,
-    "Zone B": 0,
-    "Zone C": 0,
-  });
+  const [zoneData, setZoneData] = useState({});
 
-  // ✅ Only transform incoming data
+  // Transform incoming heatmap data
   useEffect(() => {
-    const map = {
-      "Zone A": 0,
-      "Zone B": 0,
-      "Zone C": 0,
-    };
+    const map = {};
 
     if (Array.isArray(data)) {
       data.forEach((z) => {
@@ -31,7 +23,7 @@ export default function VenueMap({ data }) {
   };
 
   const ZoneBox = ({ name }) => {
-    const value = zoneData[name];
+    const value = zoneData[name] || 0;
 
     return (
       <div
@@ -46,26 +38,25 @@ export default function VenueMap({ data }) {
     );
   };
 
+  // Automatically get all zones from data
+  const zones = Object.keys(zoneData);
+
   return (
     <div className="bg-gray-50 border rounded-lg p-6">
       <h2 className="text-xl font-bold mb-4 text-center">
         Venue Zone Map
       </h2>
 
-      <div className="grid grid-cols-3 grid-rows-3 gap-4 items-center text-center">
-        <ZoneBox name="Zone A" />
-        <div></div>
-        <ZoneBox name="Zone C" />
+      <div className="grid grid-cols-3 gap-4 items-center text-center">
+        {/* Render zones dynamically */}
+        {zones.map((zone) => (
+          <ZoneBox key={zone} name={zone} />
+        ))}
 
-        <div></div>
+        {/* Arena Center */}
         <div className="h-28 rounded-full border-4 border-blue-500 flex items-center justify-center font-bold">
           Arena
         </div>
-        <div></div>
-
-        <div></div>
-        <ZoneBox name="Zone B" />
-        <div></div>
       </div>
     </div>
   );

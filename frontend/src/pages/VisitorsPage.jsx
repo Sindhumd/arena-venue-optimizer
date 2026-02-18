@@ -16,10 +16,10 @@ export default function VisitorsPage() {
           });
           return;
         }
+
         calculateStats(data);
       })
       .catch(() => {
-        console.error("Failed to load visitor analytics");
         setStats({
           totalVisitors: 0,
           peakHour: "N/A",
@@ -31,8 +31,6 @@ export default function VisitorsPage() {
 
   const calculateStats = (data) => {
     let totalVisitors = 0;
-
-    // Track hour + gate together
     let hourGateMap = {};
     let zoneMap = {};
 
@@ -40,18 +38,13 @@ export default function VisitorsPage() {
       const tickets = Number(e.tickets) || 0;
       totalVisitors += tickets;
 
-      // Time + Gate mapping
+      // Track hour + gate together
       const hourGateKey = `${e.time}|${e.gate}`;
       hourGateMap[hourGateKey] =
         (hourGateMap[hourGateKey] || 0) + tickets;
 
-      // Gate → Zone mapping
-      const zone =
-        e.gate === "Gate A"
-          ? "Zone A"
-          : e.gate === "Gate B"
-          ? "Zone B"
-          : "Zone C";
+      // Dynamic Gate → Zone conversion
+      const zone = e.gate.replace("Gate", "Zone");
 
       zoneMap[zone] = (zoneMap[zone] || 0) + tickets;
     });
@@ -64,6 +57,7 @@ export default function VisitorsPage() {
       const peakKey = Object.keys(hourGateMap).reduce((a, b) =>
         hourGateMap[a] > hourGateMap[b] ? a : b
       );
+
       [peakHour, peakGate] = peakKey.split("|");
     }
 
@@ -120,46 +114,40 @@ export default function VisitorsPage() {
         </h2>
 
         <div className="space-y-4">
-          {Object.entries(stats.zoneMap).map(
-            ([zone, count]) => {
-              const percentage = stats.totalVisitors
-                ? Math.round(
-                    (count / stats.totalVisitors) * 100
-                  )
-                : 0;
+          {Object.entries(stats.zoneMap).map(([zone, count]) => {
+            const percentage = stats.totalVisitors
+              ? Math.round((count / stats.totalVisitors) * 100)
+              : 0;
 
-              const color =
-                percentage >= 90
-                  ? "bg-red-500"
-                  : percentage >= 70
-                  ? "bg-yellow-500"
-                  : "bg-green-500";
+            const color =
+              percentage >= 90
+                ? "bg-red-500"
+                : percentage >= 70
+                ? "bg-yellow-500"
+                : "bg-green-500";
 
-              return (
-                <div key={zone}>
-                  <div className="flex justify-between text-sm font-medium mb-1">
-                    <span>{zone}</span>
-                    <span>
-                      {count} visitors ({percentage}%)
-                    </span>
-                  </div>
-
-                  <div className="w-full bg-gray-200 rounded-full h-3">
-                    <div
-                      className={`${color} h-3 rounded-full`}
-                      style={{ width: `${percentage}%` }}
-                    ></div>
-                  </div>
+            return (
+              <div key={zone}>
+                <div className="flex justify-between text-sm font-medium mb-1">
+                  <span>{zone}</span>
+                  <span>
+                    {count} visitors ({percentage}%)
+                  </span>
                 </div>
-              );
-            }
-          )}
+
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div
+                    className={`${color} h-3 rounded-full`}
+                    style={{ width: `${percentage}%` }}
+                  ></div>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         <p className="text-xs text-gray-400 mt-6">
-          Visitor analytics are derived from uploaded event ticket
-          data. Real-time sensor feeds can be integrated in future
-          phases.
+          Visitor analytics are derived from uploaded event ticket data.
         </p>
       </div>
     </div>
