@@ -12,13 +12,18 @@ import AdminLayout from "./layout/AdminLayout";
 export default function App() {
   return (
     <Routes>
+
+      {/* Login Page */}
       <Route path="/" element={<LoginPage />} />
 
+      {/* Admin Layout */}
       <Route element={<AdminLayout />}>
 
-        {/* DEFAULT PAGE AFTER LOGIN */}
-        <Route path="/dashboard" element={<Navigate to="/event-upload" />} />
+        {/* Default page after login */}
+        <Route path="/home" element={<Navigate to="/event-upload" />} />
 
+        {/* Normal pages */}
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/event-upload" element={<EventUploadPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/alerts" element={<AlertsPage />} />
@@ -26,6 +31,7 @@ export default function App() {
         <Route path="/insights" element={<InsightPage />} />
 
       </Route>
+
     </Routes>
   );
 }
