@@ -20,7 +20,7 @@ export default function App() {
       <Route element={<AdminLayout />}>
 
         {/* Default page after login */}
-        <Route path="/home" element={<Navigate to="/event-upload" />} />
+        <Route path="/home" element={<Navigate to="/EventUploadPage" />} />
 
         {/* Normal pages */}
         <Route path="/dashboard" element={<DashboardPage />} />
