@@ -2,16 +2,26 @@ export function analyzeEvents(events) {
 
   const peakHour = {};
 
+  // --------------------------
+  // GATE CAPACITY (5 Gates)
+  // --------------------------
   const gateCapacity = {
     "Gate A": 20000,
     "Gate B": 15000,
-    "Gate C": 10000
+    "Gate C": 10000,
+    "Gate D": 12000,
+    "Gate E": 8000
   };
 
+  // --------------------------
+  // ZONE CAPACITY (5 Zones)
+  // --------------------------
   const zoneCapacity = {
     "Zone A": 15000,
-    "Zone B": 12000,
-    "Zone C": 8000
+    "Zone B": 13000,
+    "Zone C": 10000,
+    "Zone D": 8000,
+    "Zone E": 5000
   };
 
   // --------------------------
@@ -39,7 +49,7 @@ export function analyzeEvents(events) {
     }
   });
 
-  const peakHourOnly = peakTime.split(":")[0];
+  const peakHourOnly = peakTime !== "N/A" ? peakTime.split(":")[0] : null;
 
   // --------------------------
   // STEP 3: Peak Hour Traffic
@@ -47,22 +57,32 @@ export function analyzeEvents(events) {
   const peakGateTraffic = {
     "Gate A": 0,
     "Gate B": 0,
-    "Gate C": 0
+    "Gate C": 0,
+    "Gate D": 0,
+    "Gate E": 0
   };
 
   const peakZoneTraffic = {
     "Zone A": 0,
     "Zone B": 0,
-    "Zone C": 0
+    "Zone C": 0,
+    "Zone D": 0,
+    "Zone E": 0
   };
 
   events.forEach(e => {
-    if (e.time.startsWith(peakHourOnly)) {
-      peakGateTraffic[e.gate] += Number(e.tickets);
+    if (peakHourOnly && e.time.startsWith(peakHourOnly)) {
 
+      if (peakGateTraffic[e.gate] !== undefined) {
+        peakGateTraffic[e.gate] += Number(e.tickets);
+      }
+
+      // Map gates to zones
       if (e.gate === "Gate A") peakZoneTraffic["Zone A"] += Number(e.tickets);
       if (e.gate === "Gate B") peakZoneTraffic["Zone B"] += Number(e.tickets);
       if (e.gate === "Gate C") peakZoneTraffic["Zone C"] += Number(e.tickets);
+      if (e.gate === "Gate D") peakZoneTraffic["Zone D"] += Number(e.tickets);
+      if (e.gate === "Gate E") peakZoneTraffic["Zone E"] += Number(e.tickets);
     }
   });
 
