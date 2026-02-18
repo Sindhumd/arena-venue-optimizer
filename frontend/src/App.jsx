@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
@@ -15,12 +15,16 @@ export default function App() {
       <Route path="/" element={<LoginPage />} />
 
       <Route element={<AdminLayout />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/events" element={<EventsPage />} />
+
+        {/* DEFAULT PAGE AFTER LOGIN */}
+        <Route path="/dashboard" element={<Navigate to="/event-upload" />} />
+
         <Route path="/event-upload" element={<EventUploadPage />} />
+        <Route path="/events" element={<EventsPage />} />
         <Route path="/alerts" element={<AlertsPage />} />
         <Route path="/visitors" element={<VisitorsPage />} />
         <Route path="/insights" element={<InsightPage />} />
+
       </Route>
     </Routes>
   );

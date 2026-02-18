@@ -9,18 +9,18 @@ function Navbar() {
         Arena Optimizer
       </h2>
 
-      {/* DEBUG (remove later) */}
-      <p className="text-xs text-yellow-400 mb-4">ROLE: {role}</p>
-
       <nav className="flex flex-col space-y-3">
+
         {(role === "ADMIN" || role === "OPS") && (
-          <Link to="/dashboard">Dashboard</Link>
+          <>
+            <Link to="/event-upload">Upload Events</Link>
+            <Link to="/dashboard">Dashboard</Link>
+          </>
         )}
 
         {role === "ADMIN" && (
           <>
             <Link to="/events">Events</Link>
-            <Link to="/event-upload">Upload Events</Link>
             <Link to="/visitors">Visitors</Link>
             <Link to="/insights">Insights</Link>
           </>
@@ -29,6 +29,7 @@ function Navbar() {
         {(role === "ADMIN" || role === "SECURITY") && (
           <Link to="/alerts">Alerts</Link>
         )}
+
       </nav>
 
       <button
