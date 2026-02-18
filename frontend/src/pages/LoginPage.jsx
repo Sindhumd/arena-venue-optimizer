@@ -7,7 +7,7 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mode, setMode] = useState("login"); // login | register
+  const [mode, setMode] = useState("login");
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
@@ -16,19 +16,19 @@ export default function LoginPage() {
 
     try {
       if (mode === "login") {
-        const res = await api.post("/api/auth/login",
-          { email, password }
-        );
+        const res = await api.post("/api/auth/login", {
+          email,
+          password,
+        });
 
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("role", res.data.role || "ADMIN");
-        window.location.href = "/dashboard";
 
+        // ✅ GO TO UPLOAD PAGE AFTER LOGIN
         navigate("/event-upload");
       } else {
-        // UI-only register (no backend)
         alert(
-          "Registration request submitted.\nAdmin will create your account."
+          "Registration request submitted. Admin will create your account."
         );
         setMode("login");
       }
@@ -86,7 +86,7 @@ export default function LoginPage() {
         <div className="text-center mt-4 text-sm text-gray-600">
           {mode === "login" ? (
             <>
-              Don’t have access?{" "}
+              Don't have access?{" "}
               <button
                 onClick={() => setMode("register")}
                 className="text-blue-600 hover:underline"
