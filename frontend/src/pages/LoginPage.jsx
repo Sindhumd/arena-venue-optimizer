@@ -24,7 +24,7 @@ export default function LoginPage() {
         localStorage.setItem("role", res.data.role || "ADMIN");
         window.location.href = "/dashboard";
 
-        navigate("/dashboard");
+        navigate("/event-upload");
       } else {
         // UI-only register (no backend)
         alert(
